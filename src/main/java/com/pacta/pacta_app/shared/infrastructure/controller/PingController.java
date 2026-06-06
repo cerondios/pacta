@@ -1,6 +1,6 @@
 package com.pacta.pacta_app.shared.infrastructure.controller;
 
-import com.pacta.pacta_app.shared.telemetry.MetricRecorder;
+import com.pacta.pacta_app.shared.domain.MetricRecorder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

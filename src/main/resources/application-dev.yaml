@@ -17,6 +17,11 @@ spring:
           starttls:
             enable: true
 
+aws:
+  s3:
+    region: ${AWS_REGION}
+    bucket: ${AWS_S3_BUCKET}
+
 logging:
   level:
     com.pacta: DEBUG

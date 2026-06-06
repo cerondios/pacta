@@ -1,15 +1,55 @@
 services:
+
   postgres:
     image: postgres:16-alpine
-    container_name: pacta-postgres
+    restart: always
     environment:
-      POSTGRES_DB: pacta
-      POSTGRES_USER: pacta
-      POSTGRES_PASSWORD: pacta
-    ports:
-      - "5432:5432"
+      POSTGRES_DB:       ${POSTGRES_DB:-pacta}
+      POSTGRES_USER:     ${POSTGRES_USER:-pacta_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
-      - pacta_pgdata:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - pacta-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-pacta_user} -d ${POSTGRES_DB:-pacta}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: pacta-app:latest
+    restart: always
+    env_file: .env
+    expose:
+      - "8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - pacta-network
+
+  nginx:
+    image: nginx:alpine
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - /var/www/certbot:/var/www/certbot:ro
+    depends_on:
+      - app
+    networks:
+      - pacta-network
 
 volumes:
-  pacta_pgdata:
+  postgres_data:
+
+networks:
+  pacta-network:
+    driver: bridge

@@ -1,2 +1,7 @@
 .claude
+.gradle
+build
 .idea
+beta-pacta-keys.pem
+.env
+.env.example

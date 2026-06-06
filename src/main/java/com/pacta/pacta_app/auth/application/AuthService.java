@@ -5,7 +5,7 @@ import com.pacta.pacta_app.user.domain.Role;
 import com.pacta.pacta_app.user.domain.User;
 import com.pacta.pacta_app.user.domain.UserRepository;
 import com.pacta.pacta_app.auth.infrastructure.JwtService;
-import com.pacta.pacta_app.shared.telemetry.MetricRecorder;
+import com.pacta.pacta_app.shared.domain.MetricRecorder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
