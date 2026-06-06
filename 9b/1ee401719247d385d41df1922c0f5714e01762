@@ -1,0 +1,35 @@
+build/tmp/bootJar/MANIFEST.MF
+  s_9494df6706d961::t_c382659b0c1cf1 1-12
+Dockerfile
+  h_c49f5768e8ddb0 18,22
+  s_9494df6706d961::t_ef9ffca275fd7d 19-21
+.gitignore
+  h_c49f5768e8ddb0 1-2
+build/resolvedMainClassName
+  s_9494df6706d961::t_c382659b0c1cf1 1
+.dockerignore
+  s_9494df6706d961::t_005e474f565565 1-8
+.claude/settings.local.json
+  s_9494df6706d961::t_c382659b0c1cf1 6-7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "9b1ee401719247d385d41df1922c0f5714e01762",
+  "prompts": {},
+  "humans": {
+    "h_c49f5768e8ddb0": {
+      "author": "wtaborda_meli <wilder.taborda@mercadolibre.com.co>"
+    }
+  },
+  "sessions": {
+    "s_9494df6706d961": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e06a0ff4-dfdc-4f38-bd00-4506c570e6e9",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "wtaborda_meli <wilder.taborda@mercadolibre.com.co>"
+    }
+  }
+}
