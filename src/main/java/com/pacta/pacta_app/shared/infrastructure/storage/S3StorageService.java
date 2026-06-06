@@ -1,5 +1,6 @@
 package com.pacta.pacta_app.shared.infrastructure.storage;
 
+import com.pacta.pacta_app.shared.domain.IdGenerator;
 import com.pacta.pacta_app.shared.domain.PresignedDTO;
 import com.pacta.pacta_app.shared.domain.StorageException;
 import com.pacta.pacta_app.shared.domain.StorageService;
@@ -29,13 +30,14 @@ class S3StorageService implements StorageService {
 
     private final S3Client s3Client;
     private final S3Presigner s3Presigner;
+    private final IdGenerator ids;
 
     @Value("${aws.s3.bucket}")
     private String bucket;
 
     @Override
     public PresignedDTO upload(MultipartFile file) {
-        String key = System.currentTimeMillis() + "-" + file.getOriginalFilename();
+        String key = ids.generate() + "-" + file.getOriginalFilename();
         try {
             PutObjectRequest putRequest = PutObjectRequest.builder()
                     .bucket(bucket)
@@ -77,7 +79,7 @@ class S3StorageService implements StorageService {
 
     @Override
     public PresignedDTO generatePresignedUpload(String resourceName) {
-        String key = System.currentTimeMillis() + "-" + resourceName.replace(" ", "_");
+        String key = ids.generate() + "-" + resourceName.replace(" ", "_");
 
         PutObjectRequest putRequest = PutObjectRequest.builder()
                 .bucket(bucket)

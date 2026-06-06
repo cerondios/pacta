@@ -1,10 +1,10 @@
 package com.pacta.pacta_app.auth.application;
 
-import com.pacta.pacta_app.auth.domain.VerificationCodeStore;
-import com.pacta.pacta_app.user.domain.Role;
-import com.pacta.pacta_app.user.domain.User;
-import com.pacta.pacta_app.user.domain.UserRepository;
+import com.pacta.pacta_app.auth.domain.IVerificationCodeRepository;
+import com.pacta.pacta_app.shared.domain.IdGenerator;
+import com.pacta.pacta_app.user.domain.*;
 import com.pacta.pacta_app.auth.infrastructure.JwtService;
+import com.pacta.pacta_app.shared.domain.DateUtil;
 import com.pacta.pacta_app.shared.domain.MetricRecorder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +16,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.Set;
-import java.util.UUID;
 
 /**
  * Passwordless auth. Register/login both email a one-time code; {@link #verify}
@@ -29,30 +28,26 @@ public class AuthService {
 
     private static final SecureRandom RANDOM = new SecureRandom();
 
-    private final UserRepository users;
-    private final VerificationCodeStore codes;
+    private final IUserRepository users;
+    private final IVerificationCodeRepository codes;
     private final EmailSender emailSender;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwt;
     private final MetricRecorder metrics;
+    private final IdGenerator ids;
 
     @Value("${pacta.security.code.ttl-seconds:600}")
     private long codeTtlSeconds;
 
     /** Creates a new account and emails a login code. */
-    public void register(String email, Set<Role> roles) {
+    public void register(String email, String fullName, Phone phone, String country) {
         String normalizedEmail = normalize(email);
         if (users.existsByEmail(normalizedEmail)) {
             metrics.incrementCounter("auth.register.conflict");
             throw new ResponseStatusException(HttpStatus.CONFLICT, "Email already registered");
         }
 
-        users.save(User.builder()
-                .id(UUID.randomUUID().toString())
-                .email(normalizedEmail)
-                .roles(roles)
-                .createdAt(Instant.now())
-                .build());
+        users.save(User.create(ids, fullName, normalizedEmail, phone, country));
 
         metrics.incrementCounter("auth.register.success");
         issueCode(normalizedEmail);
@@ -61,21 +56,21 @@ public class AuthService {
     /** Emails a login code if the account exists (silent otherwise, to avoid enumeration). */
     public void login(String email) {
         String normalizedEmail = normalize(email);
-        if (users.existsByEmail(normalizedEmail)) {
-            issueCode(normalizedEmail);
-            metrics.incrementCounter("auth.login.code_sent");
-        } else {
+        if (!users.existsByEmail(normalizedEmail)) {
             metrics.incrementCounter("auth.login.unknown_email");
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Email not registered");
         }
+        issueCode(normalizedEmail);
+        metrics.incrementCounter("auth.login.code_sent");
     }
 
     /** Validates a one-time code and returns a JWT, or 401 if invalid/expired. */
     public AuthResponse verify(String email, String code) {
         String normalizedEmail = normalize(email);
-        VerificationCodeStore.Entry entry = codes.find(normalizedEmail)
+        IVerificationCodeRepository.Entry entry = codes.find(normalizedEmail)
                 .orElseThrow(() -> unauthorized("no_code"));
 
-        if (Instant.now().isAfter(entry.expiresAt())) {
+        if (Instant.now().isAfter(DateUtil.toInstant(entry.expiresAt()))) {
             codes.remove(normalizedEmail);
             throw unauthorized("expired");
         }
@@ -84,8 +79,13 @@ public class AuthService {
         }
 
         codes.remove(normalizedEmail); // single use
-        User user = users.findByEmail(normalizedEmail)
+        var user = users.findByEmail(normalizedEmail)
                 .orElseThrow(() -> unauthorized("no_user"));
+
+        // Email verified — advance status from PENDING_VERIFICATION → PENDING_KYC
+        if (user.isPendingVerification()) {
+            user = users.update(user.verifyEmail());
+        }
 
         metrics.incrementCounter("auth.verify.success");
         return AuthResponse.bearer(jwt.generate(user), jwt.ttlSeconds());
@@ -93,7 +93,7 @@ public class AuthService {
 
     private void issueCode(String email) {
         String code = String.format("%06d", RANDOM.nextInt(1_000_000));
-        codes.save(email, passwordEncoder.encode(code), Instant.now().plusSeconds(codeTtlSeconds));
+        codes.save(email, passwordEncoder.encode(code), DateUtil.format(Instant.now().plusSeconds(codeTtlSeconds)));
         emailSender.sendLoginCode(email, code);
     }
 

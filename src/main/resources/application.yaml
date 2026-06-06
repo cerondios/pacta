@@ -5,6 +5,9 @@ spring:
   datasource:
     driver-class-name: org.postgresql.Driver
 
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+
   jpa:
     hibernate:
       ddl-auto: validate
@@ -32,6 +35,9 @@ management:
         exclude: "*"
 
 pacta:
+  super-admin:
+    email: ${SUPER_USER_MAIL}
+    password: ${SUPER_USER_PASSWORD}
   metrics:
     template: "pacta.default.%s"
   security:

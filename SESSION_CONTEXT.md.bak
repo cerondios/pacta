@@ -1,0 +1,331 @@
+# PACTA — Session Context
+
+> Long-term rental marketplace built with Java 21 + Spring Boot 4.0.6  
+> This file captures all architectural decisions, patterns and progress from the development session.
+
+---
+
+## 1. Project Overview
+
+PACTA is a two-sided marketplace:
+- **Landlords** list apartments for long-term lease
+- **Tenants** browse, apply, get verified, and sign contracts virtually
+
+Key differentiator from Airbnb: contracts are legal instruments with duration, monthly payments, deposit and compliance checks (antecedentes, sanciones, inhabilidades, historial crediticio).
+
+---
+
+## 2. Infrastructure
+
+| Component | Choice | Notes |
+|---|---|---|
+| Language | Java 21 | Virtual threads, records, pattern matching |
+| Framework | Spring Boot 4.0.6 | Latest stable |
+| Build | Gradle multi-module | Fast incremental builds |
+| Database | PostgreSQL | Hosted on Render |
+| Migrations | Flyway | V1 migration creates all tables |
+| Deployment | Docker + docker-compose | With Nginx reverse proxy |
+| Observability | Grafana Cloud (OTLP) | Via Java Agent — no code changes needed |
+| Auth | Passwordless OTP (email) | JWT HS256, 1h TTL |
+
+### Local development
+```bash
+docker compose up -d   # starts postgres
+./gradlew bootRun      # with SPRING_PROFILES_ACTIVE=local
+```
+
+### Environments
+| Profile | Purpose | DB |
+|---|---|---|
+| `local` | Local dev | localhost:5432 hardcoded |
+| `dev` | Render dev service | Env vars |
+| `prod` | Render prod service | Env vars |
+
+---
+
+## 3. Module Structure
+
+```
+src/main/java/com/pacta/pacta_app/
+│
+├── auth/                   ← Passwordless OTP auth + JWT issuance
+├── admin/                  ← Internal operators (ADMIN, SUPER_ADMIN, REVIEWER)
+├── user/                   ← Platform end-users (LANDLORD, TENANT)
+├── kyc/                    ← KYC document management
+├── compliance/             ← Compliance docs (ANTECEDENTES etc.) + config
+├── banking/                ← Bank accounts
+├── profile/                ← Self-service: logged-in user manages own data
+├── reviewer/               ← Reviewer queue + approve/reject actions
+├── landlord/               ← Landlord views
+├── tenant/                 ← Tenant views + score
+└── shared/                 ← DateUtil, IdGenerator, MetricRecorder, DocumentStatus
+```
+
+### Per-module structure (all follow the same pattern)
+```
+{module}/
+  domain/           ← Entities, value objects, repository interfaces (I{Name}Repository)
+  application/      ← Services, DTOs
+  infrastructure/
+    persistence/    ← JPA entities, Spring Data repos, Postgres adapters
+    controller/     ← REST controllers
+```
+
+---
+
+## 4. Key Separation of Concerns
+
+| Module | Audience | Endpoints |
+|---|---|---|
+| `profile/` | Logged-in user (self) | `GET/PUT /api/profile`, `/api/profile/kyc`, `/api/profile/documents`, `/api/profile/bank-accounts` |
+| `user/` | Admin operations on users | `GET/PATCH/DELETE /api/users` |
+| `landlord/` | Anyone viewing landlords | `GET /api/landlords` |
+| `tenant/` | Anyone viewing tenants | `GET /api/tenants`, `/api/tenants/{id}/score` |
+| `reviewer/` | REVIEWER / ADMIN / SUPER_ADMIN | `GET /api/reviewer/pending`, `PATCH /api/reviewer/kyc/{id}/approve` |
+| `admin/` | SUPER_ADMIN managing operators | `POST/GET /api/admins` |
+| `kyc/` | KYC submit + admin review | `POST /api/kyc`, `PATCH /api/kyc/{userId}/approve` |
+| `compliance/` | Compliance docs + configs | `POST /api/compliance`, `GET /api/compliance/configs` |
+| `banking/` | Bank accounts | `POST/DELETE /api/bank-accounts` |
+
+---
+
+## 5. User & Admin Roles
+
+### Platform users (`users` table) — `Role` enum
+- `LANDLORD` — lists properties
+- `TENANT` — rents properties (needs KYC + compliance docs + bank account)
+
+### Internal operators (`admin_users` table) — `AdminRole` enum
+- `SUPER_ADMIN` — full access, manages other admins
+- `ADMIN` — manages users, configs, properties
+- `REVIEWER` — approves/rejects KYC and compliance documents
+
+Key design: admins and users are **separate tables** with separate auth flows. They should never be confused.
+
+---
+
+## 6. User Status Lifecycle
+
+```
+PENDING_VERIFICATION
+    ↓ (verifyEmail — OTP verified)
+PENDING_KYC
+    ↓ (approveKyc — reviewer action)
+ACTIVE
+    ↓ (complete — all 4 compliance docs approved + bank account)
+COMPLETED
+    ↓ (downgradeToActive — any compliance doc expires)
+ACTIVE
+```
+
+Admin-only transitions:
+- `ACTIVE / COMPLETED → BLOCKED` via `block(adminId)`
+- `BLOCKED → PENDING_VERIFICATION` via `unblock(adminId)`
+- `ACTIVE / COMPLETED → REMOVED` via `remove(reason, removedBy)`
+
+---
+
+## 7. Database Schema
+
+```sql
+-- Core
+users              (id, full_name, email, phone_*, country, status, score, roles, created_at, updated_at, ...)
+user_roles         (user_id FK, role)
+admin_users        (id, full_name, email, role, status, created_at, updated_at)
+
+-- Permissions (seeded)
+permissions        (id)
+role_permissions   (role, permission)
+
+-- Auth
+verification_codes (email PK, code_hash, expires_at)
+
+-- KYC
+kyc_documents      (id, user_id UNIQUE, front_key, rear_key, selfie_key, status, submitted_at)
+
+-- Compliance
+document_configs   (document_type PK, expiry_days, warning_days)  ← seeded with defaults
+compliance_documents (id, user_id, document_type, key, issued_at, expires_at, status, expired, submitted_at)
+
+-- Banking
+bank_accounts      (id, user_id, bank_name, account_number, account_type, holder_name, created_at)
+```
+
+---
+
+## 8. Repository Pattern
+
+Every table has:
+- An **interface** `I{Name}Repository` in the domain layer
+- An **in-memory** implementation (active on `local`/`default` profiles)
+- A **Postgres** implementation (active on `dev`/`prod` profiles)
+
+```
+IUserRepository
+  ├── InMemoryUserRepository     @Profile(local, default)
+  └── PostgresUserRepository     @Profile(dev, prod)    @Primary
+```
+
+All repos have `save()` (create) and `update()` (modify existing) as separate methods.
+
+---
+
+## 9. DDD Patterns Applied
+
+### Rich domain (not anemic)
+Domain classes own their behavior. Services ask *"can you do this?"*, objects decide.
+
+```java
+// ❌ Anemic — service decides
+user.setStatus(BLOCKED);
+
+// ✅ Rich — domain decides + enforces rules
+user.block(adminId);     // throws if already blocked or removed
+```
+
+### Domain methods on `User`
+```java
+user.verifyEmail()           // PENDING_VERIFICATION → PENDING_KYC
+user.approveKyc(by)          // PENDING_KYC → ACTIVE
+user.rejectKyc(by)
+user.complete(by)            // ACTIVE → COMPLETED
+user.downgradeToActive()     // COMPLETED → ACTIVE (doc expired)
+user.block(adminId)          // → BLOCKED
+user.unblock(adminId)        // BLOCKED → PENDING_VERIFICATION
+user.remove(reason, by)      // → REMOVED
+user.updateProfile(...)
+user.addScore(points)
+```
+
+### Domain methods on `Admin`
+```java
+admin.canReview()        // REVIEWER | ADMIN | SUPER_ADMIN
+admin.canManageUsers()   // ADMIN | SUPER_ADMIN
+admin.canManageConfig()  // ADMIN | SUPER_ADMIN
+admin.canManageAdmins()  // SUPER_ADMIN only
+```
+
+### Domain methods on `ComplianceDocument`
+```java
+doc.isApprovedAndValid()   // status == APPROVED && !expired
+doc.isPendingReview()      // status == PENDING_REVIEW
+```
+
+### Immutability via `@Builder(toBuilder = true)`
+`User` removed `@With` — state changes only happen through named domain methods, which call `toBuilder()` internally. External code cannot set arbitrary field values.
+
+### `save()` vs `update()`
+- `save()` → creates a new entity
+- `update()` → modifies an existing entity
+All 7 repositories implement both.
+
+---
+
+## 10. Auth Flow
+
+```
+POST /api/auth/register  { email, fullName, roles, phone, country }
+  → creates User (PENDING_VERIFICATION) + issues OTP
+
+POST /api/auth/login     { email }
+  → re-issues OTP if account exists
+
+POST /api/auth/verify    { email, code }
+  → validates OTP
+  → if PENDING_VERIFICATION: transitions to PENDING_KYC
+  → returns JWT Bearer token
+```
+
+JWT payload:
+```json
+{ "sub": "email", "uid": "user-id", "roles": ["TENANT"], "status": "PENDING_KYC" }
+```
+
+All subsequent requests use `X-User-Id` header (injected by `PactaTokenFilter` from JWT).
+
+---
+
+## 11. Reviewer Workflow
+
+```
+GET /api/reviewer/pending
+→ Returns users with pending items, grouped by user:
+[
+  {
+    "user_id": "...",
+    "full_name": "...",
+    "pending_count": 3,
+    "kyc": { "status": "PENDING_REVIEW", ... },
+    "documents": [ { "type": "ANTECEDENTES", ... } ]
+  }
+]
+
+PATCH /api/reviewer/kyc/{userId}/approve     ← reviewer approves KYC
+PATCH /api/reviewer/kyc/{userId}/reject      ← reviewer rejects KYC
+PATCH /api/reviewer/documents/{docId}/approve
+PATCH /api/reviewer/documents/{docId}/reject
+```
+
+`validateReviewer(reviewerId)` delegates to `admin.canReview()` — the domain decides.
+
+---
+
+## 12. Score System
+
+| Milestone | Points |
+|---|---|
+| KYC submitted | +20 |
+| Bank account added | +20 |
+| Each compliance doc approved | +10 (×4 = +40) |
+| Profile completed (all docs + bank) | +10 |
+| **Total** | **100** |
+
+---
+
+## 13. Observability
+
+OTel Java Agent in Dockerfile intercepts everything automatically:
+- Logs → Grafana Loki
+- Metrics → Grafana Mimir
+- Traces (disabled) → removed per request
+
+Custom metrics via `MetricRecorder`:
+```java
+metrics.incrementCounter("kyc.approved");
+metrics.incrementCounter("user.blocked");
+```
+
+Metric name template in `application.yaml`:
+```yaml
+pacta.metrics.template: "pacta.%s"
+```
+
+---
+
+## 14. Key Files Reference
+
+| File | Purpose |
+|---|---|
+| `V1__create_auth_tables.sql` | Full DB schema + seeds |
+| `docker-compose.yml` | Local: postgres + app + nginx |
+| `ENV_VARIABLES.txt` | All env vars for deployment |
+| `PACTA.postman_collection.json` | All API endpoints |
+| `CURLS.sh` | curl reference for all endpoints |
+| `DDD.md` | DDD mental model explanation |
+| `USER_DOMAIN_DESIGN.md` / `.html` | Full user domain specification |
+| `PACTA.html` | Architecture domain overview |
+
+---
+
+## 15. Pending / Next Steps
+
+- [ ] `property` module — landlord lists properties
+- [ ] `application` module — tenant applies to property
+- [ ] `visit` module — tenant schedules a visit
+- [ ] `lease` module — contract creation and virtual signing
+- [ ] `payment` module — monthly rent schedules
+- [ ] `review` module — post-lease ratings
+- [ ] Admin auth flow (separate from user OTP flow)
+- [ ] Document expiry scheduled job (mark expired + notify)
+- [ ] Compliance doc re-upload after rejection
+- [ ] Score milestone notifications

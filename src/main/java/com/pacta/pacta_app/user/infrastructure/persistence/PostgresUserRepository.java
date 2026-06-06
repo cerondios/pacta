@@ -1,8 +1,6 @@
 package com.pacta.pacta_app.user.infrastructure.persistence;
 
-import com.pacta.pacta_app.user.domain.Role;
-import com.pacta.pacta_app.user.domain.User;
-import com.pacta.pacta_app.user.domain.UserRepository;
+import com.pacta.pacta_app.user.domain.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
@@ -15,12 +13,18 @@ import java.util.Optional;
 @Primary
 @Profile({"dev", "prod"})
 @RequiredArgsConstructor
-public class PostgresUserRepository implements UserRepository {
+public class PostgresUserRepository implements IUserRepository {
 
     private final UserJpaRepository jpa;
 
     @Override
     public User save(User user) {
+        jpa.save(toEntity(user));
+        return user;
+    }
+
+    @Override
+    public User update(User user) {
         jpa.save(toEntity(user));
         return user;
     }
@@ -45,22 +49,58 @@ public class PostgresUserRepository implements UserRepository {
         return jpa.findAll().stream().map(this::toDomain).toList();
     }
 
-    private UserJpaEntity toEntity(User user) {
-        UserJpaEntity entity = UserJpaEntity.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .createdAt(user.getCreatedAt())
-                .build();
-        user.getRoles().forEach(r -> entity.getRoles().add(r.name()));
-        return entity;
+    @Override
+    public List<User> findAllByRole(Role role) {
+        return jpa.findAllByRole(role.name()).stream().map(this::toDomain).toList();
     }
 
-    private User toDomain(UserJpaEntity entity) {
-        User.UserBuilder builder = User.builder()
-                .id(entity.getId())
-                .email(entity.getEmail())
-                .createdAt(entity.getCreatedAt());
-        entity.getRoles().forEach(r -> builder.role(Role.valueOf(r)));
-        return builder.build();
+    // ── Mappers ───────────────────────────────────────────────────────────────
+
+    private UserJpaEntity toEntity(User u) {
+        UserJpaEntity e = UserJpaEntity.builder()
+                .id(u.getId())
+                .fullName(u.getFullName())
+                .email(u.getEmail())
+                .phoneIndicative(u.getPhone() != null ? u.getPhone().indicative() : null)
+                .phoneNumber(u.getPhone() != null ? u.getPhone().number() : null)
+                .country(u.getCountry())
+                .city(u.getCity())
+                .status(u.getStatus().name())
+                .score(u.getScore())
+                .createdAt(u.getCreatedAt())
+                .updatedAt(u.getUpdatedAt())
+                .updatedBy(u.getUpdatedBy())
+                .removalReason(u.getRemovalReason())
+                .removedAt(u.getRemovedAt())
+                .removedBy(u.getRemovedBy())
+                .build();
+        u.getRoles().forEach(r -> e.getRoles().add(r.name()));
+        return e;
+    }
+
+    private User toDomain(UserJpaEntity e) {
+        Phone phone = (e.getPhoneIndicative() != null)
+                ? new Phone(e.getPhoneIndicative(), e.getPhoneNumber())
+                : null;
+
+        User.UserBuilder b = User.builder()
+                .id(e.getId())
+                .fullName(e.getFullName())
+                .email(e.getEmail())
+                .phone(phone)
+                .country(e.getCountry())
+                .city(e.getCity())
+                .status(UserStatus.valueOf(e.getStatus()))
+                .score(e.getScore())
+                .createdAt(e.getCreatedAt())
+                .updatedAt(e.getUpdatedAt())
+                .updatedBy(e.getUpdatedBy())
+                .removalReason(e.getRemovalReason())
+                .removedAt(e.getRemovedAt())
+                .removedBy(e.getRemovedBy());
+        if (e.getRoles() != null) {
+            e.getRoles().forEach(r -> b.role(Role.valueOf(r)));
+        }
+        return b.build();
     }
 }

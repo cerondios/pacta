@@ -3,7 +3,6 @@ package com.pacta.pacta_app.auth.infrastructure.persistence;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.Instant;
 
 @Entity
 @Table(name = "verification_codes")
@@ -21,5 +20,5 @@ public class VerificationCodeJpaEntity {
     private String codeHash;
 
     @Column(nullable = false)
-    private Instant expiresAt;
+    private String expiresAt;
 }

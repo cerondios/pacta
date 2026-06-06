@@ -7,13 +7,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.JwtException;
-import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
 
-@Component
 @RequiredArgsConstructor
 public class PactaTokenFilter extends OncePerRequestFilter {
 
@@ -24,12 +22,6 @@ public class PactaTokenFilter extends OncePerRequestFilter {
     private static final String TOKEN_HEADER = "X-Pacta-Token";
 
     private final JwtDecoder jwtDecoder;
-
-    @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) {
-        String path = request.getRequestURI();
-        return path.equals("/api/ping") || path.startsWith("/api/auth/");
-    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,

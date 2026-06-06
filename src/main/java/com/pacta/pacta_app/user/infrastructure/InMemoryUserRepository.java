@@ -1,7 +1,8 @@
 package com.pacta.pacta_app.user.infrastructure;
 
+import com.pacta.pacta_app.user.domain.IUserRepository;
+import com.pacta.pacta_app.user.domain.Role;
 import com.pacta.pacta_app.user.domain.User;
-import com.pacta.pacta_app.user.domain.UserRepository;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
@@ -12,37 +13,46 @@ import java.util.concurrent.ConcurrentMap;
 
 @Profile({"local", "default"})
 @Repository
-public class InMemoryUserRepository implements UserRepository {
+public class InMemoryUserRepository implements IUserRepository {
 
-    private final ConcurrentMap<String, User> usersByEmail = new ConcurrentHashMap<>();
+    private final ConcurrentMap<String, User> store = new ConcurrentHashMap<>();
 
     @Override
     public User save(User user) {
-        usersByEmail.put(key(user.getEmail()), user);
+        store.put(user.getId(), user);
         return user;
     }
 
     @Override
     public Optional<User> findById(String id) {
-        return usersByEmail.values().stream().filter(u -> u.getId().equals(id)).findFirst();
+        return Optional.ofNullable(store.get(id));
     }
 
     @Override
     public Optional<User> findByEmail(String email) {
-        return Optional.ofNullable(usersByEmail.get(key(email)));
+        return store.values().stream()
+                .filter(u -> u.getEmail().equalsIgnoreCase(email))
+                .findFirst();
     }
 
     @Override
     public boolean existsByEmail(String email) {
-        return usersByEmail.containsKey(key(email));
+        return store.values().stream().anyMatch(u -> u.getEmail().equalsIgnoreCase(email));
+    }
+
+    @Override
+    public User update(User user) {
+        store.put(user.getId(), user);
+        return user;
     }
 
     @Override
     public List<User> findAll() {
-        return List.copyOf(usersByEmail.values());
+        return List.copyOf(store.values());
     }
 
-    private static String key(String email) {
-        return email == null ? "" : email.trim().toLowerCase();
+    @Override
+    public List<User> findAllByRole(Role role) {
+        return store.values().stream().filter(u -> u.hasRole(role)).toList();
     }
 }

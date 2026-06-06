@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PACTA — User Domain Design</title>
+  <style>
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #22263a;
+      --border: #2e3250;
+      --accent: #6c8fff;
+      --accent2: #a78bfa;
+      --green: #4ade80;
+      --yellow: #facc15;
+      --orange: #fb923c;
+      --red: #f87171;
+      --text: #e2e8f0;
+      --muted: #8892b0;
+      --code-bg: #111827;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      padding: 2rem 1rem;
+    }
+    .container { max-width: 1000px; margin: 0 auto; }
+
+    header {
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 2rem;
+      margin-bottom: 3rem;
+    }
+    header h1 { font-size: 2.2rem; font-weight: 700; letter-spacing: -1px; }
+    header h1 span { color: var(--accent); }
+    header p { color: var(--muted); margin-top: .4rem; font-size: .95rem; }
+    .badges { display: flex; gap: .5rem; flex-wrap: wrap; margin-top: 1rem; }
+    .badge {
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 20px; padding: .2rem .7rem;
+      font-size: .75rem; color: var(--accent); font-weight: 600;
+    }
+
+    section { margin-bottom: 4rem; }
+    h2 {
+      font-size: 1.35rem; font-weight: 700; color: var(--accent);
+      border-left: 3px solid var(--accent); padding-left: .75rem;
+      margin-bottom: 1.5rem;
+    }
+    h3 { font-size: 1rem; font-weight: 700; color: var(--accent2); margin: 1.75rem 0 .75rem; }
+    p { color: var(--muted); margin-bottom: .75rem; font-size: .92rem; }
+
+    pre {
+      background: var(--code-bg); border: 1px solid var(--border);
+      border-radius: 8px; padding: 1.1rem 1.4rem;
+      overflow-x: auto;
+      font-family: 'Fira Code', 'Cascadia Code', monospace;
+      font-size: .8rem; line-height: 1.65; color: #a8b4d8;
+      margin: .6rem 0 1.2rem;
+    }
+    code {
+      background: var(--surface2); border-radius: 4px;
+      padding: .1rem .4rem; font-size: .82rem;
+      color: var(--accent2); font-family: monospace;
+    }
+
+    table {
+      width: 100%; border-collapse: collapse;
+      font-size: .86rem; margin: .75rem 0 1.5rem;
+    }
+    th {
+      background: var(--surface2); color: var(--accent);
+      padding: .6rem 1rem; text-align: left;
+      border-bottom: 2px solid var(--border);
+    }
+    td {
+      padding: .55rem 1rem; border-bottom: 1px solid var(--border);
+      color: var(--muted); text-align: left;
+    }
+    td.center { text-align: center; }
+    tr:hover td { background: var(--surface2); }
+    .check { color: var(--green); font-weight: 700; }
+    .dash  { color: var(--border); }
+
+    .role-badge {
+      display: inline-block; padding: .15rem .55rem; border-radius: 4px;
+      font-size: .75rem; font-weight: 700; font-family: monospace;
+    }
+    .role-super  { background: #2d1e3a; color: var(--accent2); }
+    .role-admin  { background: #1e3a5f; color: var(--accent); }
+    .role-reviewer { background: #2a2a1e; color: var(--yellow); }
+    .role-landlord { background: #1e3a1e; color: var(--green); }
+    .role-tenant { background: #1e2d3a; color: #60a5fa; }
+
+    .status-flow {
+      display: flex; align-items: center; flex-wrap: wrap; gap: .4rem;
+      margin: .75rem 0;
+    }
+    .status {
+      padding: .25rem .65rem; border-radius: 6px;
+      font-size: .78rem; font-weight: 600; font-family: monospace;
+    }
+    .s-pending  { background: #2a2a1e; color: var(--yellow); border: 1px solid #4a4a1e; }
+    .s-active   { background: #1e3a1e; color: var(--green);  border: 1px solid #2a5a2a; }
+    .s-completed { background: #1e2d3a; color: var(--accent); border: 1px solid #2e4a6a; }
+    .s-blocked  { background: #3a1e1e; color: var(--red);    border: 1px solid #5a2a2a; }
+    .s-removed  { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
+    .s-kyc      { background: #2a1e3a; color: var(--accent2); border: 1px solid #4a2e6a; }
+    .flow-arrow { color: var(--muted); font-size: .9rem; }
+
+    .doc-badge {
+      display: inline-block; padding: .15rem .5rem; border-radius: 4px;
+      font-size: .73rem; font-weight: 700; font-family: monospace;
+    }
+    .doc-pending  { background: #2a2a1e; color: var(--yellow); }
+    .doc-approved { background: #1e3a1e; color: var(--green); }
+    .doc-rejected { background: #3a1e1e; color: var(--red); }
+    .doc-expired  { background: var(--surface2); color: var(--muted); }
+
+    .score-table { max-width: 480px; }
+
+    .milestone {
+      display: flex; align-items: center; gap: .75rem;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 8px; padding: .6rem 1rem; margin-bottom: .4rem;
+      font-size: .86rem;
+    }
+    .points {
+      min-width: 44px; text-align: right;
+      color: var(--green); font-weight: 700; font-family: monospace;
+    }
+    .milestone-label { color: var(--muted); }
+
+    .info-box {
+      background: var(--surface); border-left: 3px solid var(--accent);
+      border-radius: 0 8px 8px 0; padding: .75rem 1rem;
+      font-size: .87rem; color: var(--muted); margin-bottom: .65rem;
+    }
+    .info-box strong { color: var(--text); }
+
+    nav {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 1.1rem 1.4rem; margin-bottom: 3rem;
+    }
+    nav h3 { color: var(--text); font-size: .92rem; margin-bottom: .65rem; }
+    nav ol { padding-left: 1.2rem; columns: 2; }
+    nav ol li { margin-bottom: .25rem; }
+    nav a { color: var(--accent); text-decoration: none; font-size: .86rem; }
+    nav a:hover { text-decoration: underline; }
+
+    footer {
+      border-top: 1px solid var(--border); padding-top: 1.5rem;
+      text-align: center; color: var(--muted); font-size: .8rem;
+    }
+
+    @media (max-width: 600px) { nav ol { columns: 1; } }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <h1><span>PACTA</span> — User Domain Design</h1>
+    <p>Roles, permissions, status lifecycle, documents, bank accounts and scoring</p>
+    <div class="badges">
+      <span class="badge">5 Roles</span>
+      <span class="badge">13 Permissions</span>
+      <span class="badge">7 User States</span>
+      <span class="badge">KYC + Compliance Docs</span>
+      <span class="badge">Score 0–100</span>
+      <span class="badge">S3 Storage</span>
+    </div>
+  </header>
+
+  <nav>
+    <h3>Table of Contents</h3>
+    <ol>
+      <li><a href="#roles">Roles</a></li>
+      <li><a href="#permissions">Permissions</a></li>
+      <li><a href="#permission-map">Role → Permission Map</a></li>
+      <li><a href="#jwt">How Permissions Are Loaded</a></li>
+      <li><a href="#status">User Status Lifecycle</a></li>
+      <li><a href="#transitions">Transition Rules</a></li>
+      <li><a href="#fields">User Fields</a></li>
+      <li><a href="#documents">Documents</a></li>
+      <li><a href="#bank">Bank Accounts</a></li>
+      <li><a href="#score">Score Milestones</a></li>
+      <li><a href="#notifications">Notifications</a></li>
+      <li><a href="#admin-config">Admin Config</a></li>
+      <li><a href="#full-profile">Full Profile Response</a></li>
+    </ol>
+  </nav>
+
+  <!-- 1. Roles -->
+  <section id="roles">
+    <h2>1. Roles</h2>
+    <table>
+      <thead><tr><th>Role</th><th>Type</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><span class="role-badge role-super">SUPER_ADMIN</span></td><td>Admin</td><td>Full access, manages roles and permissions</td></tr>
+        <tr><td><span class="role-badge role-admin">ADMIN</span></td><td>Admin</td><td>Manages users, documents, configs, properties</td></tr>
+        <tr><td><span class="role-badge role-reviewer">REVIEWER</span></td><td>Admin</td><td>Reviews and approves/rejects documents</td></tr>
+        <tr><td><span class="role-badge role-landlord">LANDLORD</span></td><td>End user</td><td>Lists properties for rent</td></tr>
+        <tr><td><span class="role-badge role-tenant">TENANT</span></td><td>End user</td><td>Searches and rents properties</td></tr>
+      </tbody>
+    </table>
+    <div class="info-box">A user can hold multiple roles (e.g. <code>TENANT</code> + <code>LANDLORD</code>). Public property listing requires no authentication.</div>
+  </section>
+
+  <!-- 2. Permissions -->
+  <section id="permissions">
+    <h2>2. Permissions</h2>
+    <table>
+      <thead><tr><th>Permission</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td><code>user:read</code></td><td>View any user's full profile</td></tr>
+        <tr><td><code>user:block</code></td><td>Block / unblock a user</td></tr>
+        <tr><td><code>user:remove</code></td><td>Remove a user</td></tr>
+        <tr><td><code>user:restore</code></td><td>Restore a removed user within 30 days</td></tr>
+        <tr><td><code>document:approve</code></td><td>Approve a KYC or compliance document</td></tr>
+        <tr><td><code>document:reject</code></td><td>Reject a KYC or compliance document</td></tr>
+        <tr><td><code>config:read</code></td><td>View document expiry configs</td></tr>
+        <tr><td><code>config:write</code></td><td>Create / update document expiry configs</td></tr>
+        <tr><td><code>bank-account:read</code></td><td>View any user's bank accounts</td></tr>
+        <tr><td><code>role:read</code></td><td>View roles and their permissions</td></tr>
+        <tr><td><code>role:write</code></td><td>Assign / remove permissions from roles</td></tr>
+        <tr><td><code>property:write</code></td><td>Create / update properties (own for LANDLORD, any for ADMIN)</td></tr>
+        <tr><td><code>property:delete</code></td><td>Delete properties (own for LANDLORD, any for ADMIN)</td></tr>
+        <tr><td><code>property:moderate</code></td><td>Hide, feature or flag any property</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 3. Permission Map -->
+  <section id="permission-map">
+    <h2>3. Role → Permission Map</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Permission</th>
+          <th style="text-align:center"><span class="role-badge role-super">SUPER_ADMIN</span></th>
+          <th style="text-align:center"><span class="role-badge role-admin">ADMIN</span></th>
+          <th style="text-align:center"><span class="role-badge role-reviewer">REVIEWER</span></th>
+          <th style="text-align:center"><span class="role-badge role-landlord">LANDLORD</span></th>
+          <th style="text-align:center"><span class="role-badge role-tenant">TENANT</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><code>user:read</code></td>       <td class="center check">✓</td><td class="center check">✓</td><td class="center check">✓</td><td class="center dash">—</td><td class="center dash">—</td></tr>
+        <tr><td><code>user:block</code></td>      <td class="center check">✓</td><td class="center check">✓</td><td class="center dash">—</td><td class="center dash">—</td><td class="center dash">—</td></tr>
+        <tr><td><code>user:remove</code></td>     <td class="center check">✓</td><td class="center check">✓</td><td class="center dash">—</td><td class="center dash">—</td><td class="center dash">—</td></tr>
+        <tr><td><code>user:restore</code></td>    <td class="center check">✓</td><td class="center check">✓</td><td class="center dash">—</td><td class="center dash">—</td><td class="center dash">—</td></tr>
+        <tr><td><code>document:approve</code></td><td class="center check">✓</td><td class="center check">✓</td><td class="center check">✓</td><td class="center dash">—</td><td class="center dash">—</td></tr>
+        <tr><td><code>document:reject</code></td> <td class="center check">✓</td><td class="center check">✓</td><td class="center check">✓</td><td class="center dash">—</td><td class="center dash">—</td></tr>
+        <tr><td><code>config:read</code></td>     <td class="center check">✓</td><td class="center check">✓</td><td class="center dash">—</td><td class="center dash">—</td><td class="center dash">—</td></tr>
+        <tr><td><code>config:write</code></td>    <td class="center check">✓</td><td class="center check">✓</td><td class="center dash">—</td><td class="center dash">—</td><td class="center dash">—</td></tr>
+        <tr><td><code>bank-account:read</code></td><td class="center check">✓</td><td class="center check">✓</td><td class="center check">✓</td><td class="center dash">—</td><td class="center dash">—</td></tr>
+        <tr><td><code>role:read</code></td>       <td class="center check">✓</td><td class="center dash">—</td><td class="center dash">—</td><td class="center dash">—</td><td class="center dash">—</td></tr>
+        <tr><td><code>role:write</code></td>      <td class="center check">✓</td><td class="center dash">—</td><td class="center dash">—</td><td class="center dash">—</td><td class="center dash">—</td></tr>
+        <tr><td><code>property:write</code></td>  <td class="center check">✓</td><td class="center check">✓</td><td class="center dash">—</td><td class="center check">✓</td><td class="center dash">—</td></tr>
+        <tr><td><code>property:delete</code></td> <td class="center check">✓</td><td class="center check">✓</td><td class="center dash">—</td><td class="center check">✓</td><td class="center dash">—</td></tr>
+        <tr><td><code>property:moderate</code></td><td class="center check">✓</td><td class="center check">✓</td><td class="center dash">—</td><td class="center dash">—</td><td class="center dash">—</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 4. JWT -->
+  <section id="jwt">
+    <h2>4. How Permissions Are Loaded</h2>
+    <p>Permissions are stored in DB (<code>roles</code>, <code>permissions</code>, <code>role_permissions</code> tables) and embedded in the JWT at login time. No DB query on every request.</p>
+    <pre>{
+  "sub": "user-uuid",
+  "roles": ["TENANT", "LANDLORD"],
+  "permissions": ["property:write", "property:delete"],
+  "status": "ACTIVE",
+  "iat": 1748736000,
+  "exp": 1748739600
+}</pre>
+    <div class="info-box">If an admin changes permissions, the user gets new ones on their next login. Staleness is controlled by <code>JWT_TTL_SECONDS</code> (keep short, e.g. 1 hour). User blocking is enforced separately via <code>status</code> check on every request.</div>
+  </section>
+
+  <!-- 5. Status Lifecycle -->
+  <section id="status">
+    <h2>5. User Status Lifecycle</h2>
+    <div class="status-flow">
+      <span class="status s-pending">PENDING_VERIFICATION</span>
+      <span class="flow-arrow">→</span>
+      <span class="status s-kyc">PENDING_KYC</span>
+      <span class="flow-arrow">→ [admin approves KYC] →</span>
+      <span class="status s-active">ACTIVE</span>
+      <span class="flow-arrow">⇄</span>
+      <span class="status s-completed">COMPLETED</span>
+    </div>
+    <div class="status-flow" style="margin-top:.4rem;">
+      <span class="status s-kyc">PENDING_KYC</span>
+      <span class="flow-arrow">→ [rejected]</span>
+      <span class="status s-kyc">PENDING_KYC</span>
+      <span class="flow-arrow">&nbsp;&nbsp;|&nbsp;&nbsp;</span>
+      <span class="status s-active">ACTIVE / COMPLETED</span>
+      <span class="flow-arrow">→</span>
+      <span class="status s-blocked">BLOCKED</span>
+      <span class="flow-arrow">→</span>
+      <span class="status s-pending">PENDING_VERIFICATION</span>
+    </div>
+    <div class="status-flow" style="margin-top:.4rem;">
+      <span style="color:var(--muted);font-size:.85rem;">ANY state</span>
+      <span class="flow-arrow">→</span>
+      <span class="status s-removed">REMOVED</span>
+      <span style="color:var(--muted);font-size:.82rem;margin-left:.5rem;">(soft delete, restorable within 30 days)</span>
+    </div>
+  </section>
+
+  <!-- 6. Transitions -->
+  <section id="transitions">
+    <h2>6. Transition Rules</h2>
+    <table>
+      <thead><tr><th>From</th><th>To</th><th>Trigger</th></tr></thead>
+      <tbody>
+        <tr><td><code>PENDING_VERIFICATION</code></td><td><code>PENDING_KYC</code></td><td>Email code verified</td></tr>
+        <tr><td><code>PENDING_KYC</code></td><td><code>ACTIVE</code></td><td>Admin approves KYC</td></tr>
+        <tr><td><code>PENDING_KYC</code></td><td><code>PENDING_KYC</code></td><td>Admin rejects KYC → user re-uploads</td></tr>
+        <tr><td><code>ACTIVE</code></td><td><code>COMPLETED</code></td><td>All compliance docs APPROVED + at least one bank account</td></tr>
+        <tr><td><code>COMPLETED</code></td><td><code>ACTIVE</code></td><td>Any compliance document expires</td></tr>
+        <tr><td><code>ACTIVE / COMPLETED</code></td><td><code>BLOCKED</code></td><td>Admin action only (reversible)</td></tr>
+        <tr><td><code>BLOCKED</code></td><td><code>PENDING_VERIFICATION</code></td><td>Admin unblocks (user restarts full onboarding)</td></tr>
+        <tr><td><code>ACTIVE / COMPLETED</code></td><td><code>REMOVED</code></td><td>Admin action OR user self-deletion</td></tr>
+        <tr><td><code>REMOVED</code></td><td>last state</td><td>Restored by admin within 30 days only</td></tr>
+      </tbody>
+    </table>
+    <div class="info-box">Users can only self-delete from <code>ACTIVE</code> or <code>COMPLETED</code>. Mid-onboarding abandonment: account auto-expires, no self-delete needed.</div>
+  </section>
+
+  <!-- 7. User Fields -->
+  <section id="fields">
+    <h2>7. User Fields</h2>
+    <pre>{
+  "id":        "uuid",
+  "fullName":  "John Doe",
+  "email":     "john@example.com",
+  "phone": {
+    "indicative": "+57",
+    "number":     "3001234567"
+  },
+  "country":       "CO",
+  "roles":         ["TENANT", "LANDLORD"],
+  "status":        "ACTIVE",
+  "score":         50,
+  "createdAt":     "2026-06-01T10:00:00Z",
+  "updatedAt":     "2026-06-05T10:00:00Z",
+  "updatedBy":     "uuid",
+  "removalReason": null,
+  "removedAt":     null,
+  "removedBy":     null
+}</pre>
+  </section>
+
+  <!-- 8. Documents -->
+  <section id="documents">
+    <h2>8. Documents</h2>
+
+    <h3>Document State Machine</h3>
+    <p>Applies to both KYC and compliance documents:</p>
+    <div class="status-flow">
+      <span class="status s-kyc">PENDING_REVIEW</span>
+      <span class="flow-arrow">→</span>
+      <span class="status s-active">APPROVED</span>
+      <span class="flow-arrow">&nbsp;(compliance only)&nbsp;→</span>
+      <span class="status s-removed">EXPIRED</span>
+    </div>
+    <div class="status-flow" style="margin-top:.4rem;">
+      <span class="status s-kyc">PENDING_REVIEW</span>
+      <span class="flow-arrow">→</span>
+      <span class="status s-blocked">REJECTED</span>
+      <span class="flow-arrow">→ [re-upload] →</span>
+      <span class="status s-kyc">PENDING_REVIEW</span>
+    </div>
+
+    <h3>KYC Document</h3>
+    <pre>{
+  "frontKey":    "s3-key/front.jpg",
+  "rearKey":     "s3-key/rear.jpg",
+  "selfieKey":   "s3-key/selfie.jpg",
+  "status":      "PENDING_REVIEW",
+  "submittedAt": "2026-06-01T10:05:00Z"
+}</pre>
+    <div class="info-box">No expiry. Admin approves/rejects. Approval moves user <code>PENDING_KYC → ACTIVE</code>.</div>
+
+    <h3>Compliance Documents</h3>
+    <p>Array — each document has its own state and type: <code>ANTECEDENTES</code> · <code>SANCIONES</code> · <code>INHABILIDADES</code> · <code>HISTORIAL_CREDITICIO</code></p>
+    <pre>[
+  {
+    "id":        "uuid",
+    "type":      "ANTECEDENTES",
+    "key":       "s3-key/antecedentes.pdf",
+    "issuedAt":  "2026-01-01T00:00:00Z",
+    "expiresAt": "2026-04-01T00:00:00Z",
+    "status":    "APPROVED",
+    "expired":   false
+  }
+]</pre>
+    <div class="info-box"><strong>expiresAt</strong> = issuedAt + expiryDays (admin-configured per type). When expired: status → <code>EXPIRED</code>, user drops <code>COMPLETED → ACTIVE</code>, email sent. Frontend alert shown <code>warningDays</code> before expiry. All 4 docs must be <code>APPROVED</code> + at least one bank account to reach <code>COMPLETED</code>.</div>
+  </section>
+
+  <!-- 9. Bank Accounts -->
+  <section id="bank">
+    <h2>9. Bank Accounts</h2>
+    <p>Array per user — no primary account. User can add and remove.</p>
+    <pre>{
+  "id":            "uuid",
+  "bankName":      "Bancolombia",
+  "accountNumber": "****1234",
+  "accountType":   "SAVINGS",
+  "holderName":    "John Doe"
+}</pre>
+    <div class="info-box"><code>accountType</code>: <code>SAVINGS</code> or <code>CHECKING</code>. <code>accountNumber</code> is masked in responses — last 4 digits only.</div>
+  </section>
+
+  <!-- 10. Score -->
+  <section id="score">
+    <h2>10. Score Milestones</h2>
+    <div class="milestone"><span class="milestone-label">Email verified</span><span class="points">+10</span></div>
+    <div class="milestone"><span class="milestone-label">KYC submitted</span><span class="points">+20</span></div>
+    <div class="milestone"><span class="milestone-label">Bank info added</span><span class="points">+20</span></div>
+    <div class="milestone"><span class="milestone-label">Antecedentes approved</span><span class="points">+10</span></div>
+    <div class="milestone"><span class="milestone-label">Sanciones approved</span><span class="points">+10</span></div>
+    <div class="milestone"><span class="milestone-label">Inhabilidades approved</span><span class="points">+10</span></div>
+    <div class="milestone"><span class="milestone-label">Historial crediticio approved</span><span class="points">+10</span></div>
+    <div class="milestone"><span class="milestone-label">Profile completed</span><span class="points">+10</span></div>
+    <div class="milestone" style="border-color:var(--accent);margin-top:.75rem;">
+      <span class="milestone-label" style="color:var(--text);font-weight:700;">Total</span>
+      <span class="points" style="font-size:1rem;">100</span>
+    </div>
+  </section>
+
+  <!-- 11. Notifications -->
+  <section id="notifications">
+    <h2>11. Notifications</h2>
+    <table>
+      <thead><tr><th>Event</th><th>Email</th><th>Frontend alert</th></tr></thead>
+      <tbody>
+        <tr><td>Document rejected</td><td class="center check">✓</td><td class="center check">✓</td></tr>
+        <tr><td>Document expiring soon</td><td class="center dash">—</td><td class="center check">✓ (<code>warningDays</code> before)</td></tr>
+        <tr><td>Document expired</td><td class="center check">✓</td><td class="center check">✓</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 12. Admin Config -->
+  <section id="admin-config">
+    <h2>12. Admin Configurable Settings</h2>
+    <p>Per document type:</p>
+    <pre>{
+  "documentType": "ANTECEDENTES",
+  "expiryDays":   90,
+  "warningDays":  15
+}</pre>
+  </section>
+
+  <!-- 13. Full Profile -->
+  <section id="full-profile">
+    <h2>13. Full User Profile Response</h2>
+    <pre>{
+  "id":        "uuid",
+  "fullName":  "John Doe",
+  "email":     "john@example.com",
+  "phone": { "indicative": "+57", "number": "3001234567" },
+  "country":   "CO",
+  "roles":     ["TENANT", "LANDLORD"],
+  "status":    "COMPLETED",
+  "score":     100,
+  "createdAt": "2026-06-01T10:00:00Z",
+  "updatedAt": "2026-06-05T10:00:00Z",
+  "updatedBy": "uuid",
+  "removalReason": null,
+  "removedAt":     null,
+  "removedBy":     null,
+  "kyc": {
+    "frontKey":    "s3-key/front.jpg",
+    "rearKey":     "s3-key/rear.jpg",
+    "selfieKey":   "s3-key/selfie.jpg",
+    "status":      "APPROVED",
+    "submittedAt": "2026-06-01T10:05:00Z"
+  },
+  "compliance": [
+    { "id": "uuid", "type": "ANTECEDENTES",        "key": "s3-key/antecedentes.pdf", "issuedAt": "2026-01-01T00:00:00Z", "expiresAt": "2026-04-01T00:00:00Z", "status": "APPROVED", "expired": false },
+    { "id": "uuid", "type": "SANCIONES",            "key": "s3-key/sanciones.pdf",    "issuedAt": "2026-01-01T00:00:00Z", "expiresAt": "2026-04-01T00:00:00Z", "status": "APPROVED", "expired": false },
+    { "id": "uuid", "type": "INHABILIDADES",        "key": "s3-key/inhabilidades.pdf","issuedAt": "2026-01-01T00:00:00Z", "expiresAt": "2026-04-01T00:00:00Z", "status": "APPROVED", "expired": false },
+    { "id": "uuid", "type": "HISTORIAL_CREDITICIO", "key": "s3-key/historial.pdf",    "issuedAt": "2026-01-01T00:00:00Z", "expiresAt": "2026-07-01T00:00:00Z", "status": "APPROVED", "expired": false }
+  ],
+  "bankAccounts": [
+    { "id": "uuid", "bankName": "Bancolombia", "accountNumber": "****1234", "accountType": "SAVINGS", "holderName": "John Doe" }
+  ]
+}</pre>
+  </section>
+
+  <footer>
+    <p>PACTA User Domain Design · June 2026</p>
+  </footer>
+
+</div>
+</body>
+</html>

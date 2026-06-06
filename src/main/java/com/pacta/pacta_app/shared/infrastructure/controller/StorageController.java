@@ -1,7 +1,6 @@
 package com.pacta.pacta_app.shared.infrastructure.controller;
 
 import com.pacta.pacta_app.shared.domain.PresignedDTO;
-import com.pacta.pacta_app.shared.domain.StorageException;
 import com.pacta.pacta_app.shared.domain.StorageService;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,13 +43,4 @@ public class StorageController {
         return storage.generatePresignedUpload(name);
     }
 
-    @ExceptionHandler(StorageException.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    ErrorResponse handleStorageError(StorageException ex) {
-        return new ErrorResponse(ex.getMessage());
-    }
-
-    public record UploadResponse(String url) {}
-
-    record ErrorResponse(String error) {}
 }
