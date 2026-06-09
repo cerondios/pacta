@@ -1,0 +1,177 @@
+src/main/java/com/pacta/pacta_app/user/domain/UserRepository.java
+  s_dae0e30ddfaad6::t_b4ecf714dcb415 1-17
+src/main/java/com/pacta/pacta_app/auth/application/AuthResponse.java
+  s_9494df6706d961::t_b7698c6ed887f8 1-9
+src/main/java/com/pacta/pacta_app/auth/infrastructure/InMemoryVerificationCodeStore.java
+  s_9494df6706d961::t_7a282db12c4f6b 1-15,17-45
+  h_c49f5768e8ddb0 16
+src/main/java/com/pacta/pacta_app/auth/infrastructure/JwtService.java
+  s_dae0e30ddfaad6::t_4c12aae65583a7 35
+  s_9494df6706d961::t_5d1dbefe98708f 1-2,4-33,36-44
+  s_dae0e30ddfaad6::t_b2bf8b416ebb9d 3
+  h_c49f5768e8ddb0 34
+src/main/java/com/pacta/pacta_app/user/infrastructure/persistence/PostgresUserRepository.java
+  h_c49f5768e8ddb0 16
+  s_dae0e30ddfaad6::t_eb6524d6e7d1ea 1-15,17-48,50-53,56-58,60-61,65-66
+  s_dae0e30ddfaad6::t_7388ae0da5bbb9 49,54-55,59,62-64
+src/main/java/com/pacta/pacta_app/shared/domain/StorageService.java
+  h_c49f5768e8ddb0 6,8
+  s_75b9dfbeb6373d::t_a121e012878738 1-5,7,9
+src/main/java/com/pacta/pacta_app/user/domain/Role.java
+  s_dae0e30ddfaad6::t_217baa70003be4 1-7
+src/main/java/com/pacta/pacta_app/auth/application/EmailSender.java
+  s_9494df6706d961::t_7b52d5006a9c84 1-11
+src/main/java/com/pacta/pacta_app/auth/application/AuthService.java
+  s_dae0e30ddfaad6::t_3b1c18f4671d90 90
+  s_9494df6706d961::t_1c3d963ac6245d 3,10,16,21-25,30-31,33-34,38-40,42,44,50,55,58-63,65-69,71-84,86-89,92-106
+  s_dae0e30ddfaad6::t_585487cc312c8f 43,46,53,57
+  h_c49f5768e8ddb0 64
+  s_9494df6706d961::t_d9695078301b0b 1-2,7,9,11-15,17,19-20,26-29,32,35-37,41,45,47-49,51-52,54,56,70,85,91,107-108
+  s_dae0e30ddfaad6::t_1aee461c024cce 4-6
+  s_dae0e30ddfaad6::t_afa6bd523bb8f6 18
+  s_dae0e30ddfaad6::t_d1d51d958034dd 8
+.env
+  h_c49f5768e8ddb0 18-19
+src/main/resources/db/migration/V1__create_auth_tables.sql
+  s_dae0e30ddfaad6::t_811af20fa2c685 5-10
+  h_c49f5768e8ddb0 20-26
+src/main/java/com/pacta/pacta_app/shared/domain/StorageException.java
+  s_75b9dfbeb6373d::t_af1b37bff706d7 1-7
+src/main/java/com/pacta/pacta_app/shared/infrastructure/telemetry/MicrometerMetricRecorder.java
+  s_dae0e30ddfaad6::t_70f2cbd726da33 1-49
+src/main/resources/application-local.yaml
+  h_c49f5768e8ddb0 1-28
+.gitignore
+  h_c49f5768e8ddb0 1-5
+src/main/java/com/pacta/pacta_app/user/infrastructure/controller/UserController.java
+  s_dae0e30ddfaad6::t_4384ecbe56f3af 46,48,50
+  s_dae0e30ddfaad6::t_3c883ab21491f2 1-2,4-9,11-16,19-25,33-34,36-39,41-43,47,51-53
+  s_dae0e30ddfaad6::t_8701926de717b8 44-45,49
+  s_dae0e30ddfaad6::t_b27442d53176ac 3,10,26-32
+  s_dae0e30ddfaad6::t_4cecf1a2a6fe3d 17-18
+  s_dae0e30ddfaad6::t_7ca4ef1ea49370 35,40
+src/main/java/com/pacta/pacta_app/shared/infrastructure/filter/MutableHttpServletRequest.java
+  s_dae0e30ddfaad6::t_b3b720d7d6cfbf 1-42
+src/main/java/com/pacta/pacta_app/shared/infrastructure/controller/StorageController.java
+  s_75b9dfbeb6373d::t_e01fe0c6bce2c1 1-2,4-32,35-43,45-57
+  h_c49f5768e8ddb0 3,33-34,44
+src/main/java/com/pacta/pacta_app/auth/infrastructure/controller/AuthController.java
+  s_dae0e30ddfaad6::t_a2f644334b1a0d 11
+  s_dae0e30ddfaad6::t_44e4b063b125b4 6-7
+  s_9494df6706d961::t_06b88342ebce0b 12,28,30-31,35,37-39,42-47,54-57,59
+  s_dae0e30ddfaad6::t_ce1f345957cad9 50
+  s_9494df6706d961::t_027a3149e804ce 1-4,8-10,13-27,29,33-34,36,40-41,48-49,51-53,58,60-61
+  s_dae0e30ddfaad6::t_efb7acba8be4e5 5
+  s_dae0e30ddfaad6::t_d46aaa506a8c4e 32
+src/main/resources/application-prod.yaml
+  s_9494df6706d961::t_c3a1de9a80db0c 1,13-24,30-31
+  s_75b9dfbeb6373d::t_0c2a26c7427cc8 6-10
+  h_c49f5768e8ddb0 2-5,11-12,25-29,32-33
+src/main/java/com/pacta/pacta_app/shared/infrastructure/storage/LocalStorageService.java
+  h_c49f5768e8ddb0 3,16,19,28,31
+  s_75b9dfbeb6373d::t_b41b0c0950e416 1-2,4-15,17-18,20-27,29-30,32-33
+Dockerfile
+  h_c49f5768e8ddb0 12,14,16,18,20-21
+  s_9494df6706d961::t_ef9ffca275fd7d 15,17,19
+src/main/java/com/pacta/pacta_app/shared/domain/PresignedDTO.java
+  h_c49f5768e8ddb0 1-3
+src/main/java/com/pacta/pacta_app/auth/infrastructure/persistence/PostgresVerificationCodeStore.java
+  h_c49f5768e8ddb0 14
+src/main/java/com/pacta/pacta_app/user/infrastructure/persistence/UserJpaRepository.java
+  s_dae0e30ddfaad6::t_6fabbc6c77e9e2 1-10
+src/main/java/com/pacta/pacta_app/shared/domain/MetricRecorder.java
+  s_dae0e30ddfaad6::t_7bfb14736df944 1-12
+build.gradle
+  s_9494df6706d961::t_bc41aeedf64a93 27-28
+  s_75b9dfbeb6373d::t_c34c794fec49ca 33-36
+  s_9494df6706d961::t_6551eeaf54d7c4 40-42
+  s_9494df6706d961::t_542eda958f5e0a 43-46
+src/main/java/com/pacta/pacta_app/shared/infrastructure/controller/PingController.java
+  h_c49f5768e8ddb0 1-2,4-33
+  s_dae0e30ddfaad6::t_fbbb616f0c6085 3
+src/main/java/com/pacta/pacta_app/user/infrastructure/InMemoryUserRepository.java
+  s_dae0e30ddfaad6::t_fa1ae4702d4ba1 1-12,14-48
+  h_c49f5768e8ddb0 13
+src/main/resources/application.yaml
+  s_9494df6706d961::t_89dce15b27af9a 24-30
+  s_9494df6706d961::t_02c115a56baa81 34-38
+  h_c49f5768e8ddb0 4-23,31-33
+  s_9494df6706d961::t_9fb8c3401caf9d 39-41
+.claude/settings.local.json
+  s_9494df6706d961::t_c382659b0c1cf1 6-7
+src/main/java/com/pacta/pacta_app/user/domain/User.java
+  s_dae0e30ddfaad6::t_e75ec08496a544 1-4,6-7,9-15,17-18
+  s_dae0e30ddfaad6::t_bc4650672c0a3d 5,8,16
+src/main/java/com/pacta/pacta_app/shared/infrastructure/telemetry/LocalMetricRecorder.java
+  s_dae0e30ddfaad6::t_f8da3f84a983e6 1-36
+src/main/java/com/pacta/pacta_app/auth/domain/VerificationCodeStore.java
+  s_9494df6706d961::t_8a120e2fa375b2 1-21
+src/main/java/com/pacta/pacta_app/config/SecurityConfig.java
+  s_dae0e30ddfaad6::t_3d571e60509c90 34-35,47-51
+  s_9494df6706d961::t_0ad1869fa8d6d5 3-28,37-46,52-55
+src/main/resources/application-dev.yaml
+  h_c49f5768e8ddb0 2-7,20-29,32-33
+  s_9494df6706d961::t_eb395d2e588e6f 1,8-19,30-31
+src/main/java/com/pacta/pacta_app/shared/infrastructure/filter/PactaTokenFilter.java
+  s_dae0e30ddfaad6::t_e4584eaf34bb61 1-23,25-37,39,42-56,58
+  s_dae0e30ddfaad6::t_0b31900c967dcb 38,40-41
+  s_dae0e30ddfaad6::t_1980d256f93d0a 24
+  s_dae0e30ddfaad6::t_000f2940a812cb 57
+src/main/java/com/pacta/pacta_app/auth/infrastructure/SmtpEmailSender.java
+  h_c49f5768e8ddb0 20
+  s_9494df6706d961::t_f05956417f9aa4 1-6,8-19,21-42
+  s_75b9dfbeb6373d::t_a4618061a4d2bb 7
+docker-compose.yml
+  h_c49f5768e8ddb0 2,5,7-37,39-40,42-48,51-55
+src/main/java/com/pacta/pacta_app/shared/infrastructure/storage/S3Config.java
+  s_75b9dfbeb6373d::t_5776ead7e00ab0 1-31
+.dockerignore
+  s_9494df6706d961::t_005e474f565565 1-8
+src/main/java/com/pacta/pacta_app/user/infrastructure/persistence/UserJpaEntity.java
+  s_dae0e30ddfaad6::t_8f790b0bf67305 1-6,9-24,30-33
+  s_dae0e30ddfaad6::t_b22975a20ec9ba 7-8,25-29
+src/main/java/com/pacta/pacta_app/auth/infrastructure/LogEmailSender.java
+  s_9494df6706d961::t_bc5a90a571b1e8 1-4,6-8,12-14,16-22
+  h_c49f5768e8ddb0 5,15
+  s_9494df6706d961::t_02b86ffb6600c4 9-11
+src/main/java/com/pacta/pacta_app/shared/infrastructure/storage/S3StorageService.java
+  h_c49f5768e8ddb0 3,14,16,18-19,37,40,45-59,79,93
+  s_75b9dfbeb6373d::t_ae747afd56448f 1-2,4-13,15,17,20-36,38-39,41-44,60-78,80-92,94-95
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "6c73cbdd2e07168184aa1473b3a9673cd5bebfe2",
+  "prompts": {},
+  "humans": {
+    "h_c49f5768e8ddb0": {
+      "author": "wtaborda_meli <wilder.taborda@mercadolibre.com.co>"
+    }
+  },
+  "sessions": {
+    "s_75b9dfbeb6373d": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a9a7787e-c159-48a6-b5b1-7207f9d6c82b",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": null
+    },
+    "s_9494df6706d961": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e06a0ff4-dfdc-4f38-bd00-4506c570e6e9",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": null
+    },
+    "s_dae0e30ddfaad6": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "95d15e05-8edb-4405-86cb-d641be2ab83a",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": null
+    }
+  }
+}
