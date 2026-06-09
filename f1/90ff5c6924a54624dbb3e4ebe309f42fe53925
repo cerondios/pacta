@@ -1,0 +1,14 @@
+.gitignore
+  h_c49f5768e8ddb0 6-7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "f190ff5c6924a54624dbb3e4ebe309f42fe53925",
+  "prompts": {},
+  "humans": {
+    "h_c49f5768e8ddb0": {
+      "author": "wtaborda_meli <wilder.taborda@mercadolibre.com.co>"
+    }
+  }
+}
