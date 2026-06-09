@@ -1,0 +1,16 @@
+src/main/java/com/pacta/pacta_app/shared/infrastructure/telemetry/LocalMetricRecorder.java
+  h_c49f5768e8ddb0 36-46
+.gitignore
+  h_c49f5768e8ddb0 6-7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.6",
+  "base_commit_sha": "1d3fa24bb835a72f4ea5613e69113b4ae17d128e",
+  "prompts": {},
+  "humans": {
+    "h_c49f5768e8ddb0": {
+      "author": "wtaborda_meli <wilder.taborda@mercadolibre.com.co>"
+    }
+  }
+}
