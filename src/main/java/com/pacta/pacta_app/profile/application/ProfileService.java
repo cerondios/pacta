@@ -4,8 +4,8 @@ import com.pacta.pacta_app.banking.application.BankAccountService;
 import com.pacta.pacta_app.banking.domain.AccountType;
 import com.pacta.pacta_app.banking.domain.BankAccount;
 import com.pacta.pacta_app.compliance.application.ComplianceDocumentService;
+import com.pacta.pacta_app.compliance.application.dto.ComplianceRequirementResponse;
 import com.pacta.pacta_app.compliance.domain.ComplianceDocument;
-import com.pacta.pacta_app.compliance.domain.DocumentType;
 import com.pacta.pacta_app.kyc.application.KycService;
 import com.pacta.pacta_app.kyc.domain.KycDocument;
 import com.pacta.pacta_app.user.application.UserService;
@@ -33,11 +33,12 @@ public class ProfileService {
     // ── User profile ──────────────────────────────────────────────────────────
 
     public Profile getProfile(String userId) {
-        User user                    = userService.getById(userId);
-        Optional<KycDocument> kyc    = kycService.findByUserId(userId);
-        List<ComplianceDocument> docs = complianceService.findByUserId(userId);
-        List<BankAccount> accounts   = bankAccountService.findByUserId(userId);
-        return new Profile(user, kyc.orElse(null), docs, accounts);
+        User user              = userService.getById(userId);
+        Optional<KycDocument> kyc = kycService.findByUserId(userId);
+        int pendingDocuments   = (int) complianceService.getRequirements(userId).stream()
+                .filter(r -> "NOT_SUBMITTED".equals(r.status())).count();
+        List<BankAccount> accounts = bankAccountService.findByUserId(userId);
+        return new Profile(user, kyc.orElse(null), pendingDocuments, accounts);
     }
 
     @Transactional
@@ -68,12 +69,12 @@ public class ProfileService {
     // ── Compliance documents ──────────────────────────────────────────────────
 
     @Transactional
-    public ComplianceDocument submitDocument(String userId, DocumentType type, String key, Instant issuedAt) {
-        return complianceService.submit(userId, type, key, issuedAt);
+    public ComplianceDocument submitDocument(String userId, String typeCode, String key, Instant issuedAt) {
+        return complianceService.submit(userId, typeCode, key, issuedAt);
     }
 
-    public List<ComplianceDocument> getDocuments(String userId) {
-        return complianceService.findByUserId(userId);
+    public List<ComplianceRequirementResponse> getDocuments(String userId) {
+        return complianceService.getRequirements(userId);
     }
 
     // ── Bank accounts ─────────────────────────────────────────────────────────
@@ -96,9 +97,9 @@ public class ProfileService {
     // ── Aggregate ─────────────────────────────────────────────────────────────
 
     public record Profile(
-            User                     user,
-            KycDocument              kyc,
-            List<ComplianceDocument> documents,
-            List<BankAccount>        bankAccounts
+            User             user,
+            KycDocument      kyc,
+            int              pendingDocuments,
+            List<BankAccount> bankAccounts
     ) {}
 }

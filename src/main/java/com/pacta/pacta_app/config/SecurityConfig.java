@@ -36,16 +36,15 @@ public class SecurityConfig {
     @Value("${pacta.security.jwt.secret}")
     private String jwtSecret;
 
-    @Value("${pacta.cors.allowed-origins:http://localhost:3000}")
-    private String allowedOrigins;
-
     /**
      * Route ownership — single source of truth:
      *
-     *   /api/auth/**          → public (no token required)
-     *   /api/admins/**        → OperatorTokenFilter
-     *   /api/reviewer/**      → OperatorTokenFilter
-     *   everything else       → PactaTokenFilter
+     *   /api/auth/**                  → public (no token required)
+     *   /api/ping                     → public (no token required)
+     *   /api/admins/**                → OperatorTokenFilter
+     *   /api/reviewer/**              → OperatorTokenFilter
+     *   /api/compliance/configs/**    → OperatorTokenFilter (admin-managed document types)
+     *   everything else               → PactaTokenFilter
      */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -60,7 +59,7 @@ public class SecurityConfig {
                 new FilterByRouteMatcher(
                     req -> {
                         String uri = req.getRequestURI();
-                        return uri.startsWith("/api/admins/") || uri.startsWith("/api/reviewer/");
+                        return isAdminRoute(uri) || isReviewerRoute(uri) || isComplianceConfigRoute(uri) || isFilesViewRoute(uri);
                     },
                     new OperatorTokenFilter(decoder)
                 ), BearerTokenAuthenticationFilter.class
@@ -70,8 +69,11 @@ public class SecurityConfig {
                     req -> {
                         String uri = req.getRequestURI();
                         return !uri.startsWith("/api/auth/")
-                            && !uri.startsWith("/api/admins/")
-                            && !uri.startsWith("/api/reviewer/");
+                            && !uri.equals("/api/ping")
+                            && !isAdminRoute(uri)
+                            && !isReviewerRoute(uri)
+                            && !isComplianceConfigRoute(uri)
+                            && !isFilesViewRoute(uri);
                     },
                     new PactaTokenFilter(decoder)
                 ), BearerTokenAuthenticationFilter.class
@@ -93,10 +95,10 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of(allowedOrigins.split(",")));
+        config.setAllowedOriginPatterns(List.of("*"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
-        config.setExposedHeaders(List.of("X-Pacta-Token"));
+        config.setExposedHeaders(List.of("X-Pacta-Token", "X-Operator-Token"));
         config.setAllowCredentials(true);
         config.setMaxAge(3600L);
 
@@ -108,6 +110,22 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    private static boolean isAdminRoute(String uri) {
+        return uri.equals("/api/admins") || uri.startsWith("/api/admins/");
+    }
+
+    private static boolean isReviewerRoute(String uri) {
+        return uri.equals("/api/reviewer") || uri.startsWith("/api/reviewer/");
+    }
+
+    private static boolean isComplianceConfigRoute(String uri) {
+        return uri.equals("/api/compliance/configs") || uri.startsWith("/api/compliance/configs/");
+    }
+
+    private static boolean isFilesViewRoute(String uri) {
+        return uri.equals("/api/files/url");
     }
 
     private SecretKey secretKey() {

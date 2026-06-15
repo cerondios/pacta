@@ -4,6 +4,8 @@ import com.pacta.pacta_app.admin.application.AdminService;
 import com.pacta.pacta_app.admin.application.dto.AdminResponse;
 import com.pacta.pacta_app.admin.application.dto.CreateAdminRequest;
 import com.pacta.pacta_app.admin.domain.AdminRole;
+import com.pacta.pacta_app.property.application.PropertyService;
+import com.pacta.pacta_app.property.application.dto.PropertyResponse;
 import com.pacta.pacta_app.shared.infrastructure.filter.OperatorTokenFilter;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +19,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdminController {
 
-    private final AdminService adminService;
+    private final AdminService    adminService;
+    private final PropertyService propertyService;
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -42,5 +45,21 @@ public class AdminController {
     @GetMapping("/reviewers")
     public List<AdminResponse> listReviewers() {
         return adminService.findAllByRole(AdminRole.REVIEWER).stream().map(AdminResponse::from).toList();
+    }
+
+    // ── Property moderation ───────────────────────────────────────────────────
+
+    @PatchMapping("/properties/{id}/block")
+    public PropertyResponse blockProperty(
+            @PathVariable String id,
+            @RequestHeader(OperatorTokenFilter.HEADER_OPERATOR_ID) String adminId) {
+        return PropertyResponse.from(propertyService.block(id, adminId));
+    }
+
+    @PatchMapping("/properties/{id}/unblock")
+    public PropertyResponse unblockProperty(
+            @PathVariable String id,
+            @RequestHeader(OperatorTokenFilter.HEADER_OPERATOR_ID) String adminId) {
+        return PropertyResponse.from(propertyService.unblock(id, adminId));
     }
 }
