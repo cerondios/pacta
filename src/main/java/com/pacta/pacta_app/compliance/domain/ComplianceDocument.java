@@ -15,7 +15,7 @@ public class ComplianceDocument {
 
     private final String         id;
     private final String         userId;
-    private final DocumentType   type;
+    private final String         typeCode;
     private final String         key;
     private final String         issuedAt;
     private final String         expiresAt;
@@ -25,9 +25,6 @@ public class ComplianceDocument {
     private final String         reviewedBy;
     private final String         reviewedAt;
 
-    // ── Queries ───────────────────────────────────────────────────────────────
-
-    /** Approved and not expired — counts toward COMPLETED status. */
     public boolean isApprovedAndValid() {
         return status == DocumentStatus.APPROVED && !expired;
     }
@@ -35,8 +32,6 @@ public class ComplianceDocument {
     public boolean isPendingReview() {
         return status == DocumentStatus.PENDING_REVIEW;
     }
-
-    // ── Domain behavior ───────────────────────────────────────────────────────
 
     public ComplianceDocument approve(String reviewedBy) {
         if (this.status != DocumentStatus.PENDING_REVIEW)
@@ -58,19 +53,16 @@ public class ComplianceDocument {
                 .build();
     }
 
-    /** Marks the document as expired (called by the scheduled expiry job). */
     public ComplianceDocument markExpired() {
         return this.toBuilder().expired(true).build();
     }
 
-    // ── Factory ───────────────────────────────────────────────────────────────
-
-    public static ComplianceDocument create(IdGenerator ids, String userId, DocumentType type,
+    public static ComplianceDocument create(IdGenerator ids, String userId, String typeCode,
                                             String key, Instant issuedAt, int expiryDays) {
         return ComplianceDocument.builder()
                 .id(ids.generate())
                 .userId(userId)
-                .type(type)
+                .typeCode(typeCode)
                 .key(key)
                 .issuedAt(DateUtil.format(issuedAt))
                 .expiresAt(DateUtil.format(issuedAt.plus(Duration.ofDays(expiryDays))))

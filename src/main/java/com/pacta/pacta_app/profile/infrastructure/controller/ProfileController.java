@@ -3,8 +3,9 @@ package com.pacta.pacta_app.profile.infrastructure.controller;
 import com.pacta.pacta_app.banking.application.dto.BankAccountResponse;
 import com.pacta.pacta_app.banking.domain.AccountType;
 import com.pacta.pacta_app.compliance.application.dto.ComplianceDocResponse;
-import com.pacta.pacta_app.compliance.domain.DocumentType;
+import com.pacta.pacta_app.compliance.application.dto.ComplianceRequirementResponse;
 import com.pacta.pacta_app.kyc.application.dto.KycResponse;
+import com.pacta.pacta_app.auth.infrastructure.JwtService;
 import com.pacta.pacta_app.profile.application.ProfileService;
 import com.pacta.pacta_app.shared.infrastructure.filter.PactaTokenFilter;
 import com.pacta.pacta_app.user.domain.Phone;
@@ -16,6 +17,8 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
@@ -24,11 +27,12 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/profile")
+@RequestMapping("/api/me")
 @RequiredArgsConstructor
 public class ProfileController {
 
     private final ProfileService profileService;
+    private final JwtService     jwtService;
 
     // ── Full profile ──────────────────────────────────────────────────────────
 
@@ -54,12 +58,14 @@ public class ProfileController {
      * Returns 409 Conflict if onboarding was already completed.
      */
     @PostMapping("/onboarding")
-    @ResponseStatus(HttpStatus.OK)
-    public ProfileResponse completeOnboarding(@RequestHeader(PactaTokenFilter.HEADER_USER_ID) String userId,
-                                              @Valid @RequestBody OnboardingRequest req) {
+    public ResponseEntity<ProfileResponse> completeOnboarding(@RequestHeader(PactaTokenFilter.HEADER_USER_ID) String userId,
+                                                              @Valid @RequestBody OnboardingRequest req) {
         User updated = profileService.completeOnboarding(userId, req.roles(), req.city());
         ProfileService.Profile p = profileService.getProfile(updated.getId());
-        return ProfileResponse.from(p);
+        String freshToken = jwtService.generate(updated);
+        return ResponseEntity.ok()
+                .header("X-Pacta-Token", freshToken)
+                .body(ProfileResponse.from(p));
     }
 
     // ── KYC ───────────────────────────────────────────────────────────────────
@@ -75,7 +81,7 @@ public class ProfileController {
     public KycResponse getKyc(@RequestHeader(PactaTokenFilter.HEADER_USER_ID) String userId) {
         return profileService.getKyc(userId)
                 .map(KycResponse::from)
-                .orElse(null);
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No KYC found"));
     }
 
     // ── Compliance documents ──────────────────────────────────────────────────
@@ -85,12 +91,12 @@ public class ProfileController {
     public ComplianceDocResponse submitDocument(@RequestHeader(PactaTokenFilter.HEADER_USER_ID) String userId,
                                                 @Valid @RequestBody DocumentRequest req) {
         return ComplianceDocResponse.from(
-                profileService.submitDocument(userId, req.type(), req.key(), req.issuedAt()));
+                profileService.submitDocument(userId, req.typeCode(), req.key(), Instant.parse(req.issuedAt())));
     }
 
     @GetMapping("/documents")
-    public List<ComplianceDocResponse> getDocuments(@RequestHeader(PactaTokenFilter.HEADER_USER_ID) String userId) {
-        return profileService.getDocuments(userId).stream().map(ComplianceDocResponse::from).toList();
+    public List<ComplianceRequirementResponse> getDocuments(@RequestHeader(PactaTokenFilter.HEADER_USER_ID) String userId) {
+        return profileService.getDocuments(userId);
     }
 
     // ── Bank accounts ─────────────────────────────────────────────────────────
@@ -135,7 +141,7 @@ public class ProfileController {
             int score,
             String createdAt,
             KycResponse kyc,
-            List<ComplianceDocResponse> documents,
+            int pendingDocuments,
             List<BankAccountResponse> bankAccounts
     ) {
         static ProfileResponse from(ProfileService.Profile p) {
@@ -148,7 +154,7 @@ public class ProfileController {
                     u.getRoles().stream().map(Enum::name).collect(Collectors.toSet()),
                     u.getStatus().name(), u.getScore(), u.getCreatedAt(),
                     p.kyc() != null ? KycResponse.from(p.kyc()) : null,
-                    p.documents().stream().map(ComplianceDocResponse::from).toList(),
+                    p.pendingDocuments(),
                     p.bankAccounts().stream().map(BankAccountResponse::from).toList()
             );
         }
@@ -168,9 +174,9 @@ public class ProfileController {
     ) {}
 
     public record DocumentRequest(
-            @NotNull DocumentType type,
+            @NotBlank String typeCode,
             @NotBlank String key,
-            @NotNull Instant issuedAt
+            @NotBlank String issuedAt
     ) {}
 
     public record BankAccountRequest(

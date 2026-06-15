@@ -1,7 +1,6 @@
 package com.pacta.pacta_app.compliance.infrastructure;
 
 import com.pacta.pacta_app.compliance.domain.ComplianceDocument;
-import com.pacta.pacta_app.compliance.domain.DocumentType;
 import com.pacta.pacta_app.compliance.domain.IComplianceDocumentRepository;
 import com.pacta.pacta_app.shared.domain.DocumentStatus;
 import org.springframework.context.annotation.Profile;
@@ -19,17 +18,9 @@ public class InMemoryComplianceDocumentRepository implements IComplianceDocument
 
     private final Map<String, ComplianceDocument> store = new ConcurrentHashMap<>();
 
-    @Override
-    public ComplianceDocument save(ComplianceDocument doc) {
-        store.put(doc.getId(), doc);
-        return doc;
-    }
-
-    @Override
-    public ComplianceDocument update(ComplianceDocument doc) {
-        store.put(doc.getId(), doc);
-        return doc;
-    }
+    @Override public ComplianceDocument save(ComplianceDocument doc)   { store.put(doc.getId(), doc); return doc; }
+    @Override public ComplianceDocument update(ComplianceDocument doc) { store.put(doc.getId(), doc); return doc; }
+    @Override public void delete(String id)                            { store.remove(id); }
 
     @Override
     public List<ComplianceDocument> findByUserId(String userId) {
@@ -37,9 +28,9 @@ public class InMemoryComplianceDocumentRepository implements IComplianceDocument
     }
 
     @Override
-    public Optional<ComplianceDocument> findByUserIdAndType(String userId, DocumentType type) {
+    public Optional<ComplianceDocument> findByUserIdAndTypeCode(String userId, String typeCode) {
         return store.values().stream()
-                .filter(d -> d.getUserId().equals(userId) && d.getType() == type)
+                .filter(d -> d.getUserId().equals(userId) && d.getTypeCode().equals(typeCode))
                 .findFirst();
     }
 

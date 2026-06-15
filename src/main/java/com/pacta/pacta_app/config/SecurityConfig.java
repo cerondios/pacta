@@ -36,16 +36,15 @@ public class SecurityConfig {
     @Value("${pacta.security.jwt.secret}")
     private String jwtSecret;
 
-    @Value("${pacta.cors.allowed-origins:http://localhost:3000}")
-    private String allowedOrigins;
-
     /**
      * Route ownership — single source of truth:
      *
-     *   /api/auth/**          → public (no token required)
-     *   /api/admins/**        → OperatorTokenFilter
-     *   /api/reviewer/**      → OperatorTokenFilter
-     *   everything else       → PactaTokenFilter
+     *   /api/auth/**                  → public (no token required)
+     *   /api/ping                     → public (no token required)
+     *   /api/payments/webhook         → public (Wompi calls this; verified via checksum)
+     *   /api/admin/**                 → OperatorTokenFilter
+     *   /api/property-configs/**      → OperatorTokenFilter (admin writes) / public (GET)
+     *   everything else               → PactaTokenFilter
      */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -59,8 +58,9 @@ public class SecurityConfig {
             .addFilterBefore(
                 new FilterByRouteMatcher(
                     req -> {
-                        String uri = req.getRequestURI();
-                        return uri.startsWith("/api/admins/") || uri.startsWith("/api/reviewer/");
+                        String uri    = req.getRequestURI();
+                        String method = req.getMethod();
+                        return isAdminRoute(uri) || isPropertyConfigAdminRoute(uri, method) || isFilesViewRoute(uri);
                     },
                     new OperatorTokenFilter(decoder)
                 ), BearerTokenAuthenticationFilter.class
@@ -68,10 +68,14 @@ public class SecurityConfig {
             .addFilterBefore(
                 new FilterByRouteMatcher(
                     req -> {
-                        String uri = req.getRequestURI();
+                        String uri    = req.getRequestURI();
+                        String method = req.getMethod();
                         return !uri.startsWith("/api/auth/")
-                            && !uri.startsWith("/api/admins/")
-                            && !uri.startsWith("/api/reviewer/");
+                            && !uri.equals("/api/ping")
+                            && !uri.equals("/api/payments/webhook")
+                            && !isAdminRoute(uri)
+                            && !isPropertyConfigAdminRoute(uri, method)
+                            && !isFilesViewRoute(uri);
                     },
                     new PactaTokenFilter(decoder)
                 ), BearerTokenAuthenticationFilter.class
@@ -93,10 +97,10 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of(allowedOrigins.split(",")));
+        config.setAllowedOriginPatterns(List.of("*"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
-        config.setExposedHeaders(List.of("X-Pacta-Token"));
+        config.setExposedHeaders(List.of("X-Pacta-Token", "X-Operator-Token"));
         config.setAllowCredentials(true);
         config.setMaxAge(3600L);
 
@@ -108,6 +112,25 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    private static boolean isAdminRoute(String uri) {
+        return uri.equals("/api/admin") || uri.startsWith("/api/admin/");
+    }
+
+    private static boolean isPropertyConfigAdminRoute(String uri, String method) {
+        // GET /api/property-configs               → public (landlord form)
+        // GET /api/property-configs/all           → admin
+        // POST /api/property-configs              → admin
+        // PATCH|DELETE /api/property-configs/{id} → admin
+        if (uri.equals("/api/property-configs/all")) return true;
+        if (uri.equals("/api/property-configs"))     return !method.equals("GET");
+        if (uri.startsWith("/api/property-configs/")) return true;
+        return false;
+    }
+
+    private static boolean isFilesViewRoute(String uri) {
+        return uri.equals("/api/files/url");
     }
 
     private SecretKey secretKey() {

@@ -11,4 +11,6 @@ public interface IUserRepository {
     boolean existsByEmail(String email);
     List<User> findAll();
     List<User> findAllByRole(Role role);
+    List<User> search(String name, String status, String role);
+    List<User> findByCountryAndStatus(String country, UserStatus status);
 }
