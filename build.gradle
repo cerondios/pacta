@@ -37,6 +37,9 @@ dependencies {
 	// Validation
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+	// PDF generation (rental contracts)
+	implementation 'org.apache.pdfbox:pdfbox:3.0.3'
+
 	// Mail (SMTP via JavaMailSender) — sends one-time login codes
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 

@@ -1,11 +1,14 @@
 package com.pacta.pacta_app.kyc.application;
 
+import com.pacta.pacta_app.compliance.application.ComplianceDocumentService;
 import com.pacta.pacta_app.kyc.domain.KycDocument;
 import com.pacta.pacta_app.kyc.domain.IKycDocumentRepository;
 import com.pacta.pacta_app.shared.domain.DocumentStatus;
 import com.pacta.pacta_app.shared.domain.IdGenerator;
 import com.pacta.pacta_app.shared.domain.MetricRecorder;
+import com.pacta.pacta_app.shared.domain.StorageService;
 import com.pacta.pacta_app.user.domain.IUserRepository;
+import com.pacta.pacta_app.user.domain.UserStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,10 +24,12 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class KycService {
 
-    private final IKycDocumentRepository kycDocs;
-    private final IUserRepository        users;
-    private final MetricRecorder        metrics;
-    private final IdGenerator           ids;
+    private final IKycDocumentRepository    kycDocs;
+    private final IUserRepository           users;
+    private final MetricRecorder            metrics;
+    private final IdGenerator               ids;
+    private final StorageService            storage;
+    private final ComplianceDocumentService complianceDocumentService;
 
     @Transactional
     public KycDocument submit(String userId, String frontKey, String rearKey, String selfieKey) {
@@ -60,13 +65,21 @@ public class KycService {
 
     @Transactional
     public KycDocument approve(String userId, String reviewedBy) {
-        KycDocument doc     = getByUserIdOrThrow(userId);
-        KycDocument updated = doc.approve(reviewedBy);
-        kycDocs.update(updated);
+        KycDocument doc = getByUserIdOrThrow(userId);
         var user = users.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "User not found for KYC approval: " + userId));
-        users.update(user.approveKyc(reviewedBy));
+
+        // Compute both transitions before persisting either — if the user's state doesn't
+        // allow approveKyc() (e.g. already ACTIVE), this throws here and nothing is written,
+        // instead of leaving the KYC doc APPROVED while the user stays stuck at PENDING_KYC.
+        var approvedUser = user.approveKyc(reviewedBy);
+        KycDocument updated = doc.approve(reviewedBy);
+
+        users.update(approvedUser);
+        kycDocs.update(updated);
+        complianceDocumentService.evaluateCompletion(userId, reviewedBy);
+        deleteFiles(doc);
         metrics.incrementCounter("kyc.approved");
         return updated;
     }
@@ -76,6 +89,7 @@ public class KycService {
         KycDocument doc     = getByUserIdOrThrow(userId);
         KycDocument updated = doc.reject(reviewedBy);
         kycDocs.update(updated);
+        deleteFiles(doc);
         metrics.incrementCounter("kyc.rejected");
         return updated;
     }
@@ -92,6 +106,30 @@ public class KycService {
 
     public List<KycDocument> findAllPendingReview() {
         return kycDocs.findAllPendingReview();
+    }
+
+    /**
+     * Self-heals a user stuck at PENDING_KYC whose document is actually APPROVED — a state
+     * that should no longer occur given {@link #approve}, but repairs any record left over
+     * from before that fix (or any other future write that manages to skip a step).
+     */
+    @Transactional
+    public void ensureUserSyncedWithApprovedKyc(String userId) {
+        kycDocs.findByUserId(userId).ifPresent(doc -> {
+            if (doc.getStatus() != DocumentStatus.APPROVED) return;
+            users.findById(userId).ifPresent(user -> {
+                if (user.getStatus() == UserStatus.PENDING_KYC) {
+                    log.warn("Self-healing user {} stuck at PENDING_KYC with an already-APPROVED KYC document", userId);
+                    users.update(user.approveKyc("system"));
+                }
+            });
+        });
+    }
+
+    private void deleteFiles(KycDocument doc) {
+        try { storage.delete(doc.getFrontKey());  } catch (Exception e) { log.warn("Failed to delete KYC front key {}", doc.getFrontKey(), e); }
+        try { storage.delete(doc.getRearKey());   } catch (Exception e) { log.warn("Failed to delete KYC rear key {}", doc.getRearKey(), e); }
+        try { storage.delete(doc.getSelfieKey()); } catch (Exception e) { log.warn("Failed to delete KYC selfie key {}", doc.getSelfieKey(), e); }
     }
 
     private void addScore(String userId, int points) {

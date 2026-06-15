@@ -1,0 +1,4 @@
+ALTER TABLE properties RENAME COLUMN name TO title;
+ALTER TABLE properties ADD COLUMN IF NOT EXISTS address VARCHAR;
+ALTER TABLE properties DROP COLUMN IF EXISTS bank_account_id;
+ALTER TABLE properties DROP COLUMN IF EXISTS stratum;

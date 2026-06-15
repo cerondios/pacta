@@ -37,6 +37,10 @@ public class UserService {
         return userRepository.findAll();
     }
 
+    public List<User> search(String name, String status, String role) {
+        return userRepository.search(name, status, role);
+    }
+
     @Transactional
     public User completeOnboarding(String userId, Set<Role> roles, String city) {
         User updated = getById(userId).completeOnboarding(roles, city);

@@ -30,14 +30,15 @@ public class TenantService {
         return users.findAllByRole(Role.TENANT);
     }
 
+    /**
+     * Looks up the public profile of any platform user (tenant or landlord) — despite the
+     * class name, this backs the generic {@code /api/users/{id}} endpoint, used e.g. to
+     * resolve the counterpart's name on a Deal regardless of which side they're on.
+     */
     public TenantProfile findById(String id) {
         User user = users.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
-                        "Tenant not found: " + id));
-
-        if (!user.hasRole(Role.TENANT)) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Tenant not found: " + id);
-        }
+                        "User not found: " + id));
 
         Optional<KycDocument>      kyc        = kycService.findByUserId(id);
         List<ComplianceDocument>   compliance = complianceService.findByUserId(id);
