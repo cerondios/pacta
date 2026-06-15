@@ -6,7 +6,6 @@ import com.pacta.pacta_app.shared.domain.StorageException;
 import com.pacta.pacta_app.shared.domain.StorageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.sync.RequestBody;
@@ -24,7 +23,6 @@ import java.io.IOException;
 import java.time.Duration;
 
 @Service
-@Profile({"dev", "prod"})
 @RequiredArgsConstructor
 class S3StorageService implements StorageService {
 
@@ -75,6 +73,19 @@ class S3StorageService implements StorageService {
         } catch (Exception e) {
             throw new StorageException("Error deleting object from S3: " + key, e);
         }
+    }
+
+    @Override
+    public String getViewUrl(String key) {
+        GetObjectRequest getRequest = GetObjectRequest.builder()
+                .bucket(bucket)
+                .key(key)
+                .build();
+        GetObjectPresignRequest presignRequest = GetObjectPresignRequest.builder()
+                .signatureDuration(Duration.ofMinutes(15))
+                .getObjectRequest(getRequest)
+                .build();
+        return s3Presigner.presignGetObject(presignRequest).url().toString();
     }
 
     @Override

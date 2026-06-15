@@ -56,6 +56,10 @@ public class User {
         return status == UserStatus.PENDING_VERIFICATION;
     }
 
+    public boolean isCompleted() {
+        return status == UserStatus.COMPLETED;
+    }
+
     public boolean isActive() {
         return status == UserStatus.ACTIVE || status == UserStatus.COMPLETED;
     }

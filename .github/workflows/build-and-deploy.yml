@@ -66,5 +66,7 @@ jobs:
               -e SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }} \
               -e SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL }} \
               -e SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }} \
-              -e SPRING_PROFILES_ACTIVE=dev \
+              -e SPRING_PROFILES_ACTIVE=${{ secrets.SPRING_PROFILES_ACTIVE }} \
+              -e SUPER_USER_MAIL=${{ secrets.SUPER_USER_MAIL }} \
+              -e SUPER_USER_PASSWORD=${{ secrets.SUPER_USER_PASSWORD }} \
               cerondios/pacta-app:${{ github.ref_name }}

@@ -55,4 +55,13 @@ public class InMemoryUserRepository implements IUserRepository {
     public List<User> findAllByRole(Role role) {
         return store.values().stream().filter(u -> u.hasRole(role)).toList();
     }
+
+    @Override
+    public List<User> search(String name, String status, String role) {
+        return store.values().stream()
+                .filter(u -> name   == null || u.getFullName().toLowerCase().contains(name.toLowerCase()))
+                .filter(u -> status == null || u.getStatus().name().equals(status))
+                .filter(u -> role   == null || u.getRoles().stream().anyMatch(r -> r.name().equals(role)))
+                .toList();
+    }
 }

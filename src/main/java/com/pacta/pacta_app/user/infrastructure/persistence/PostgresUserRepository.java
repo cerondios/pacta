@@ -54,6 +54,11 @@ public class PostgresUserRepository implements IUserRepository {
         return jpa.findAllByRole(role.name()).stream().map(this::toDomain).toList();
     }
 
+    @Override
+    public List<User> search(String name, String status, String role) {
+        return jpa.search(name, status, role).stream().map(this::toDomain).toList();
+    }
+
     // ── Mappers ───────────────────────────────────────────────────────────────
 
     private UserJpaEntity toEntity(User u) {

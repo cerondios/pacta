@@ -4,3 +4,4 @@ build
 .idea
 beta-pacta-keys.pem
 .env
+bin
