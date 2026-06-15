@@ -1,0 +1,42 @@
+src/main/resources/application-local.yaml
+  h_c49f5768e8ddb0 26
+src/main/resources/application.yaml
+  h_c49f5768e8ddb0 46
+src/main/java/com/pacta/pacta_app/config/SecurityConfig.java
+  s_e56383c26f1614::t_797d10d15f1652 71
+  s_e56383c26f1614::t_2f5c5f5a9d91f3 95
+  s_e56383c26f1614::t_d431a4420c5ea4 43
+src/main/resources/application-dev.yaml
+  s_9494df6706d961::t_eb395d2e588e6f 31
+src/main/resources/application-prod.yaml
+  h_c49f5768e8ddb0 31
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.7",
+  "base_commit_sha": "dcac646f26f4b6a9fd8517ebabd5eebbdac12d4e",
+  "prompts": {},
+  "humans": {
+    "h_c49f5768e8ddb0": {
+      "author": "wtaborda_meli <wilder.taborda@mercadolibre.com.co>"
+    }
+  },
+  "sessions": {
+    "s_9494df6706d961": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e06a0ff4-dfdc-4f38-bd00-4506c570e6e9",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": null
+    },
+    "s_e56383c26f1614": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e9a73530-c96f-47e4-baab-9be34cdd780d",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": "wtaborda_meli <wilder.taborda@mercadolibre.com.co>"
+    }
+  }
+}
