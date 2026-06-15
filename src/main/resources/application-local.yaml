@@ -23,6 +23,6 @@ logging:
 
 pacta:
   mail:
-    from: ${MAIL_FROM:no-reply@pacta.app}
+    from: ${MAIL_FROM}
   metrics:
     template: "pacta.local.%s"

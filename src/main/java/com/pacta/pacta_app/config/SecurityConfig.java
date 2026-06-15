@@ -36,13 +36,11 @@ public class SecurityConfig {
     @Value("${pacta.security.jwt.secret}")
     private String jwtSecret;
 
-    @Value("${pacta.cors.allowed-origins:http://localhost:3000}")
-    private String allowedOrigins;
-
     /**
      * Route ownership — single source of truth:
      *
      *   /api/auth/**          → public (no token required)
+     *   /api/ping             → public (no token required)
      *   /api/admins/**        → OperatorTokenFilter
      *   /api/reviewer/**      → OperatorTokenFilter
      *   everything else       → PactaTokenFilter
@@ -70,6 +68,7 @@ public class SecurityConfig {
                     req -> {
                         String uri = req.getRequestURI();
                         return !uri.startsWith("/api/auth/")
+                            && !uri.equals("/api/ping")
                             && !uri.startsWith("/api/admins/")
                             && !uri.startsWith("/api/reviewer/");
                     },
@@ -93,7 +92,7 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOrigins(List.of(allowedOrigins.split(",")));
+        config.setAllowedOriginPatterns(List.of("*"));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setExposedHeaders(List.of("X-Pacta-Token"));
