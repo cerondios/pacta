@@ -17,7 +17,7 @@ public record ComplianceReviewItem(
     public static ComplianceReviewItem from(ComplianceDocument d) {
         return new ComplianceReviewItem(
                 d.getId(), d.getUserId(),
-                d.getType().name(), d.getKey(),
+                d.getTypeCode(), d.getKey(),
                 d.getIssuedAt(), d.getExpiresAt(),
                 d.getStatus().name(), d.getSubmittedAt());
     }

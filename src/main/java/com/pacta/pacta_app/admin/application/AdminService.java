@@ -41,9 +41,17 @@ public class AdminService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED,
                         "Operator not found: " + operatorId));
 
-        if (!caller.canManageAdmins()) {
+        boolean isSuperAdmin = caller.canManageAdmins();
+        boolean isAdmin      = caller.isActive() && caller.getRole() == AdminRole.ADMIN;
+
+        if (!isSuperAdmin && !isAdmin) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN,
-                    "Only SUPER_ADMINs can create operators");
+                    "Only SUPER_ADMINs and ADMINs can create operators");
+        }
+
+        if (isAdmin && role == AdminRole.SUPER_ADMIN) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN,
+                    "ADMINs cannot create SUPER_ADMIN operators");
         }
 
         String normalizedEmail = email.trim().toLowerCase();

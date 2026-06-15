@@ -43,7 +43,7 @@ pacta:
   security:
     jwt:
       # HMAC-SHA256 secret. MUST be >= 32 chars. Override in every real env.
-      secret: ${JWT_SECRET:dev-only-insecure-secret-change-me-please-0123456789}
+      secret: ${JWT_SECRET}
       ttl-seconds: ${JWT_TTL_SECONDS:3600}
     code:
       # Lifetime of the one-time login code emailed to users.

@@ -3,7 +3,7 @@ package com.pacta.pacta_app.profile.infrastructure.controller;
 import com.pacta.pacta_app.banking.application.dto.BankAccountResponse;
 import com.pacta.pacta_app.banking.domain.AccountType;
 import com.pacta.pacta_app.compliance.application.dto.ComplianceDocResponse;
-import com.pacta.pacta_app.compliance.domain.DocumentType;
+import com.pacta.pacta_app.compliance.application.dto.ComplianceRequirementResponse;
 import com.pacta.pacta_app.kyc.application.dto.KycResponse;
 import com.pacta.pacta_app.profile.application.ProfileService;
 import com.pacta.pacta_app.shared.infrastructure.filter.PactaTokenFilter;
@@ -85,12 +85,12 @@ public class ProfileController {
     public ComplianceDocResponse submitDocument(@RequestHeader(PactaTokenFilter.HEADER_USER_ID) String userId,
                                                 @Valid @RequestBody DocumentRequest req) {
         return ComplianceDocResponse.from(
-                profileService.submitDocument(userId, req.type(), req.key(), req.issuedAt()));
+                profileService.submitDocument(userId, req.typeCode(), req.key(), Instant.parse(req.issuedAt())));
     }
 
     @GetMapping("/documents")
-    public List<ComplianceDocResponse> getDocuments(@RequestHeader(PactaTokenFilter.HEADER_USER_ID) String userId) {
-        return profileService.getDocuments(userId).stream().map(ComplianceDocResponse::from).toList();
+    public List<ComplianceRequirementResponse> getDocuments(@RequestHeader(PactaTokenFilter.HEADER_USER_ID) String userId) {
+        return profileService.getDocuments(userId);
     }
 
     // ── Bank accounts ─────────────────────────────────────────────────────────
@@ -135,7 +135,7 @@ public class ProfileController {
             int score,
             String createdAt,
             KycResponse kyc,
-            List<ComplianceDocResponse> documents,
+            int pendingDocuments,
             List<BankAccountResponse> bankAccounts
     ) {
         static ProfileResponse from(ProfileService.Profile p) {
@@ -148,7 +148,7 @@ public class ProfileController {
                     u.getRoles().stream().map(Enum::name).collect(Collectors.toSet()),
                     u.getStatus().name(), u.getScore(), u.getCreatedAt(),
                     p.kyc() != null ? KycResponse.from(p.kyc()) : null,
-                    p.documents().stream().map(ComplianceDocResponse::from).toList(),
+                    p.pendingDocuments(),
                     p.bankAccounts().stream().map(BankAccountResponse::from).toList()
             );
         }
@@ -168,9 +168,9 @@ public class ProfileController {
     ) {}
 
     public record DocumentRequest(
-            @NotNull DocumentType type,
+            @NotBlank String typeCode,
             @NotBlank String key,
-            @NotNull Instant issuedAt
+            @NotBlank String issuedAt
     ) {}
 
     public record BankAccountRequest(

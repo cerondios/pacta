@@ -5,6 +5,7 @@ import com.pacta.pacta_app.kyc.domain.IKycDocumentRepository;
 import com.pacta.pacta_app.shared.domain.DocumentStatus;
 import com.pacta.pacta_app.shared.domain.IdGenerator;
 import com.pacta.pacta_app.shared.domain.MetricRecorder;
+import com.pacta.pacta_app.shared.domain.StorageService;
 import com.pacta.pacta_app.user.domain.IUserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,8 +24,9 @@ public class KycService {
 
     private final IKycDocumentRepository kycDocs;
     private final IUserRepository        users;
-    private final MetricRecorder        metrics;
-    private final IdGenerator           ids;
+    private final MetricRecorder         metrics;
+    private final IdGenerator            ids;
+    private final StorageService         storage;
 
     @Transactional
     public KycDocument submit(String userId, String frontKey, String rearKey, String selfieKey) {
@@ -67,6 +69,7 @@ public class KycService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "User not found for KYC approval: " + userId));
         users.update(user.approveKyc(reviewedBy));
+        deleteFiles(doc);
         metrics.incrementCounter("kyc.approved");
         return updated;
     }
@@ -76,6 +79,7 @@ public class KycService {
         KycDocument doc     = getByUserIdOrThrow(userId);
         KycDocument updated = doc.reject(reviewedBy);
         kycDocs.update(updated);
+        deleteFiles(doc);
         metrics.incrementCounter("kyc.rejected");
         return updated;
     }
@@ -92,6 +96,12 @@ public class KycService {
 
     public List<KycDocument> findAllPendingReview() {
         return kycDocs.findAllPendingReview();
+    }
+
+    private void deleteFiles(KycDocument doc) {
+        try { storage.delete(doc.getFrontKey());  } catch (Exception e) { log.warn("Failed to delete KYC front key {}", doc.getFrontKey(), e); }
+        try { storage.delete(doc.getRearKey());   } catch (Exception e) { log.warn("Failed to delete KYC rear key {}", doc.getRearKey(), e); }
+        try { storage.delete(doc.getSelfieKey()); } catch (Exception e) { log.warn("Failed to delete KYC selfie key {}", doc.getSelfieKey(), e); }
     }
 
     private void addScore(String userId, int points) {
