@@ -1,0 +1,493 @@
+src/main/java/com/pacta/pacta_app/config/SecurityConfig.java
+  s_298fac49e4a6d4::t_6407cb48fbd349 44-45
+  s_e56383c26f1614::t_3fd5c6fd62e88c 74
+  s_298fac49e4a6d4::t_c98a4958a23617 62,70
+  s_adbb30cdbfb2d4::t_a7e2de9a5444b0 119-127
+  s_e56383c26f1614::t_9edfea5c64e94a 42-43,46
+  s_e56383c26f1614::t_2f5c5f5a9d91f3 98
+  s_298fac49e4a6d4::t_15a1fcfa02e38e 116
+  s_adbb30cdbfb2d4::t_fe56ce8d5250c3 128-129
+  h_c49f5768e8ddb0 101
+  s_e56383c26f1614::t_b4144fe837a1fd 115,117-118
+  s_adbb30cdbfb2d4::t_528e48d8afef2b 71,75
+  s_adbb30cdbfb2d4::t_475acb9e89c88b 60-61
+  s_72b023079fe27c::t_2ac05ae0c112f9 130-133
+  s_e56383c26f1614::t_797d10d15f1652 73
+  s_72b023079fe27c::t_b75530bf31f191 76
+src/main/java/com/pacta/pacta_app/property/domain/spec/PropertyTypeSpec.java
+  s_adbb30cdbfb2d4::t_99b1c66a9b5e10 1-13
+src/main/java/com/pacta/pacta_app/compliance/infrastructure/persistence/PostgresComplianceDocConfigRepository.java
+  s_e56383c26f1614::t_bc3d46378826fd 3-4,15,17,19-22,24-26,29-45
+src/main/java/com/pacta/pacta_app/property/domain/spec/PropertyTypeSpecFactory.java
+  s_adbb30cdbfb2d4::t_cfdc330c88ed9d 10,19
+  s_adbb30cdbfb2d4::t_ed7e07f7190a8e 1-9,11-18,20-22
+src/main/java/com/pacta/pacta_app/property/domain/PropertyType.java
+  s_e56383c26f1614::t_a6295b066c26d2 1-3
+  s_adbb30cdbfb2d4::t_7e88f580cce412 4
+src/main/java/com/pacta/pacta_app/user/infrastructure/persistence/PostgresUserRepository.java
+  s_298fac49e4a6d4::t_42b34c41cfa1f1 57-61
+src/main/java/com/pacta/pacta_app/property/application/dto/PropertyAttributeConfigRequest.java
+  s_adbb30cdbfb2d4::t_df3fb1b56e1c54 1-7,9
+  s_adbb30cdbfb2d4::t_724dfa5f93b0ae 8
+src/main/java/com/pacta/pacta_app/property/application/dto/PropertyAttributeConfigResponse.java
+  s_adbb30cdbfb2d4::t_cabab384510a8c 1-16,18-19
+  s_298fac49e4a6d4::t_3dd02487b0a31f 17
+src/main/java/com/pacta/pacta_app/property/application/dto/PropertyResponse.java
+  s_adbb30cdbfb2d4::t_ce0d266ef5c9e2 15,19,27,50,54
+  s_adbb30cdbfb2d4::t_6c5f06d5320bdd 4
+  s_298fac49e4a6d4::t_9a6a4eb3930ac7 25
+  s_adbb30cdbfb2d4::t_95c11452d0d49c 16
+  s_298fac49e4a6d4::t_fe5bf3861d094d 60
+  s_e56383c26f1614::t_b04a954d9fa6dc 1-3,6-12,14,17,20-24,26,30-41,45-47,49,52,55-59,61,65-78
+  s_adbb30cdbfb2d4::t_6266446a26aa34 48
+  s_298fac49e4a6d4::t_29ad6d772452ec 28
+  s_adbb30cdbfb2d4::t_c0b13c09739e29 13
+  s_298fac49e4a6d4::t_4f27580d20b387 5,29,42-44,63-64
+  s_adbb30cdbfb2d4::t_ce035d013a6a9e 51
+  s_adbb30cdbfb2d4::t_1b5582324f31bf 62
+src/main/resources/db/migration/V6__restructure_document_configs.sql
+  s_e56383c26f1614::t_8e856c1300fa19 1-17
+src/main/java/com/pacta/pacta_app/shared/domain/StorageService.java
+  s_72b023079fe27c::t_01e04abc104f5d 9
+src/main/resources/db/migration/V14__property_rename_photo_urls_to_keys.sql
+  s_298fac49e4a6d4::t_d105786ba74609 1
+src/main/resources/application-dev.yaml
+  s_9494df6706d961::t_eb395d2e588e6f 31
+src/main/java/com/pacta/pacta_app/admin/infrastructure/controller/AdminUserController.java
+  s_298fac49e4a6d4::t_7087612113591f 1,3-6,9-13,18-21,23,25-30,32-38,40-42,45-49,52-56,59-64,67-83,85-105
+src/main/java/com/pacta/pacta_app/property/application/dto/PropertySearchRequest.java
+  s_298fac49e4a6d4::t_6daf53432f5809 31-33
+  s_298fac49e4a6d4::t_71ccb371622b8d 3-8,29-30
+  s_298fac49e4a6d4::t_c0be2397a86bc7 1-2,9-28,34
+src/main/resources/db/migration/V12__property_add_country.sql
+  s_adbb30cdbfb2d4::t_786071d2d3be56 1
+src/main/resources/db/migration/V11__property_purpose.sql
+  s_adbb30cdbfb2d4::t_dc238d67f579e3 1
+src/main/java/com/pacta/pacta_app/compliance/domain/IComplianceDocumentRepository.java
+  s_e56383c26f1614::t_d3108ae69152b6 10
+  s_72b023079fe27c::t_97c647c22b2c0a 14
+src/main/resources/application.yaml
+  h_c49f5768e8ddb0 46
+src/main/java/com/pacta/pacta_app/property/domain/PropertyAttributeConfig.java
+  s_adbb30cdbfb2d4::t_e04ce60cbddc3a 1-17
+src/main/java/com/pacta/pacta_app/user/infrastructure/controller/UserController.java
+  s_298fac49e4a6d4::t_74ccea6b4a2457 3-4,13,15,17-18
+src/main/resources/application-prod.yaml
+  h_c49f5768e8ddb0 31
+src/main/java/com/pacta/pacta_app/compliance/infrastructure/persistence/PostgresComplianceDocumentRepository.java
+  s_e56383c26f1614::t_0409c1fceae6b4 19,22-30,34,43
+  s_298fac49e4a6d4::t_490e4fe5b0ec1f 20
+  s_72b023079fe27c::t_fd78301d251d55 21
+src/main/java/com/pacta/pacta_app/compliance/application/dto/ComplianceDocConfigResponse.java
+  s_e56383c26f1614::t_2d902f78837ffe 3,5-12
+src/main/java/com/pacta/pacta_app/property/domain/spec/RoomSpec.java
+  s_adbb30cdbfb2d4::t_5e1db53e776f51 1-17,25-30
+  s_adbb30cdbfb2d4::t_657a4d8217d7e8 18-24
+src/main/java/com/pacta/pacta_app/compliance/domain/IComplianceDocConfigRepository.java
+  s_e56383c26f1614::t_5b7587ce15edb8 6-12
+src/main/java/com/pacta/pacta_app/property/infrastructure/persistence/PropertyJpaEntity.java
+  s_adbb30cdbfb2d4::t_2d2528be7848e5 18,22
+  s_298fac49e4a6d4::t_e9ae6ce5063f1c 28
+  s_298fac49e4a6d4::t_b8b1833ae1659e 35
+  s_adbb30cdbfb2d4::t_0a1696bdf908f4 17
+  s_e56383c26f1614::t_99eec277471d50 1-16,20,23,26-27,29-31,33-34,36-39,44-63
+  s_adbb30cdbfb2d4::t_62f5d5ec3ef6b3 19
+  s_adbb30cdbfb2d4::t_f303b93a737676 21,24-25,32,40-43
+src/main/java/com/pacta/pacta_app/property/domain/spec/ApartmentSpec.java
+  s_adbb30cdbfb2d4::t_8526486238a153 18-22,24-25
+  s_298fac49e4a6d4::t_83ebf849c21fac 23
+  s_adbb30cdbfb2d4::t_152a93f39cd415 1-17,26-31
+src/main/java/com/pacta/pacta_app/property/application/dto/PropertyRequestResponse.java
+  s_298fac49e4a6d4::t_0d56f4868486dc 1-21
+src/main/resources/db/migration/V13__property_attribute_configs_catalog.sql
+  s_adbb30cdbfb2d4::t_87662e3e3b2f12 4-11,15-31,35-48,52-69
+  s_adbb30cdbfb2d4::t_a86a64b474435f 1-2,12-13,32-33,49-50
+  s_adbb30cdbfb2d4::t_c5ce048515a1bb 3,14,34,51
+src/main/java/com/pacta/pacta_app/property/infrastructure/persistence/PropertyAttributeConfigSpringRepository.java
+  s_adbb30cdbfb2d4::t_7bd5064d7915c7 1,3-4,7,9-10,12,14,17
+  s_adbb30cdbfb2d4::t_872bbb15b0dd98 16
+src/main/java/com/pacta/pacta_app/compliance/infrastructure/persistence/ComplianceDocConfigJpaEntity.java
+  s_e56383c26f1614::t_06c3d155a6128f 9-20
+src/main/java/com/pacta/pacta_app/compliance/application/ComplianceDocumentService.java
+  s_72b023079fe27c::t_9ce5c80d297736 69
+  s_72b023079fe27c::t_76d53723dfe31a 128,130-133
+  s_72b023079fe27c::t_d97fddc55c9d40 88-95,97
+  s_a33d3cf3da47ea::t_e73aef666f9e75 21,24
+  s_e56383c26f1614::t_97a8dff63153a4 23,35-36,41-42,46,60,125-127,135,139,142-143,145-148,150-153,155,158-160
+  s_e56383c26f1614::t_42005a8a726236 33
+  s_a33d3cf3da47ea::t_b594d30814e9e1 108-124
+  s_72b023079fe27c::t_2e172f88d6d24f 96
+  s_a33d3cf3da47ea::t_4a9162d9bc3e7f 3
+  s_72b023079fe27c::t_7d205902f2ce01 37
+  s_e56383c26f1614::t_649441da378963 4-7
+  s_72b023079fe27c::t_b202c97816b215 10
+  h_c49f5768e8ddb0 40,58
+  s_72b023079fe27c::t_53277a7f5a6d71 82
+  s_e56383c26f1614::t_a989969bead631 44
+  s_72b023079fe27c::t_c679c7c10534a1 48-56
+  s_e56383c26f1614::t_d4e9f185b3310a 140
+  s_e56383c26f1614::t_7bb8003fb98f9d 141
+src/main/java/com/pacta/pacta_app/shared/infrastructure/storage/S3StorageService.java
+  s_72b023079fe27c::t_57ca64aeb6a04e 79-90
+src/main/resources/application-local.yaml
+  s_72b023079fe27c::t_918aa67360e0c0 1-5
+  h_c49f5768e8ddb0 31
+src/main/java/com/pacta/pacta_app/property/infrastructure/InMemoryPropertyRepository.java
+  s_adbb30cdbfb2d4::t_04a9df3d6cd88f 34-39
+  s_298fac49e4a6d4::t_718f15540646d3 86,96-101,103
+  s_adbb30cdbfb2d4::t_411d86ff4560e0 51-55
+  s_298fac49e4a6d4::t_1f0cf1c2574fd3 7
+  s_adbb30cdbfb2d4::t_e632f8456f0d19 47-50
+  s_298fac49e4a6d4::t_202bc512f51851 31,33,44,46,60-62,64,104
+  s_e56383c26f1614::t_4e5e138afbe15d 1,4-6,18-30,40-43,56-59
+  s_298fac49e4a6d4::t_99d2900207475a 65-85,87-95
+  s_298fac49e4a6d4::t_b5b2af4d5e9714 102
+  s_298fac49e4a6d4::t_8d9573402c38fd 63
+  s_298fac49e4a6d4::t_4c173b3819d72f 3
+src/main/java/com/pacta/pacta_app/compliance/application/dto/ComplianceRequirementResponse.java
+  s_a33d3cf3da47ea::t_73d3e8a854bc0d 1-6,13-16,18-22,24-25
+  s_a33d3cf3da47ea::t_caf03f2a2838a4 7-10
+  s_72b023079fe27c::t_1f573cc7bf0621 11-12,17,23
+src/main/java/com/pacta/pacta_app/admin/infrastructure/controller/AdminController.java
+  s_298fac49e4a6d4::t_64567881a353b9 54-62
+  s_e56383c26f1614::t_f2ec7d6112e1b4 23-24
+  s_298fac49e4a6d4::t_8a980c6b94d576 25
+  s_e56383c26f1614::t_f1f408d9f6c55f 51-53,63-66,68-73
+  s_298fac49e4a6d4::t_93dc2720b9d20e 67,74
+  s_298fac49e4a6d4::t_19a1ec06c11996 9
+  s_e56383c26f1614::t_448a24f650fb98 75
+  s_298fac49e4a6d4::t_9856ee22b7bee0 19
+  s_e56383c26f1614::t_a518e79ea9a1e7 7-8
+src/main/java/com/pacta/pacta_app/property/application/PropertyAttributeConfigService.java
+  s_adbb30cdbfb2d4::t_9a0a0d520e9f8b 1-76
+src/main/java/com/pacta/pacta_app/compliance/application/dto/ComplianceDocConfigRequest.java
+  s_e56383c26f1614::t_a311ca18b64688 3-9
+src/main/resources/db/migration/V16__create_property_requests.sql
+  s_298fac49e4a6d4::t_f4d2421ec45555 1-10
+src/main/java/com/pacta/pacta_app/compliance/infrastructure/InMemoryComplianceDocumentRepository.java
+  s_e56383c26f1614::t_9ba44b20ee8a2e 21-22,31,33
+  s_72b023079fe27c::t_15e3896b52b9d9 23
+src/main/java/com/pacta/pacta_app/compliance/application/dto/ComplianceDocRequest.java
+  s_e56383c26f1614::t_e586072c9e2798 9,11
+src/main/java/com/pacta/pacta_app/property/domain/IPropertyAttributeConfigRepository.java
+  s_adbb30cdbfb2d4::t_0042bb3ef4463c 1-14
+src/main/resources/db/migration/V15__cleanup_property_model.sql
+  s_298fac49e4a6d4::t_b4c5b778e10f5d 1-4
+src/main/java/com/pacta/pacta_app/user/infrastructure/InMemoryUserRepository.java
+  s_298fac49e4a6d4::t_c6529ec31d1d20 58-66
+src/main/java/com/pacta/pacta_app/property/application/PropertyService.java
+  s_adbb30cdbfb2d4::t_63da2e66e815e7 60
+  s_e56383c26f1614::t_d9e24409525740 41-45
+  s_298fac49e4a6d4::t_c0afbe9ab3548f 84-86
+  s_298fac49e4a6d4::t_fc306ccffed14c 264-284
+  s_adbb30cdbfb2d4::t_64d7b4cfdf9023 13,39-40,53-54,91-92,128-129,139-140,173,212
+  s_298fac49e4a6d4::t_9a6aa2572fbbf5 14
+  s_298fac49e4a6d4::t_dbffda1b01f675 56-57
+  s_298fac49e4a6d4::t_ede790f03fe86d 74
+  s_adbb30cdbfb2d4::t_44583fbb2a8c92 172,186
+  s_adbb30cdbfb2d4::t_59135fb6afd373 64,67-68,76-78
+  s_298fac49e4a6d4::t_55dfa77eb9772d 31-36
+  s_298fac49e4a6d4::t_9e76574b9cbbba 229
+  s_298fac49e4a6d4::t_9e8d508749b0c6 230
+  s_298fac49e4a6d4::t_771f148f642219 231-232
+  s_adbb30cdbfb2d4::t_9850f8f78885aa 233-236
+  s_298fac49e4a6d4::t_027a216d46761c 71
+  s_adbb30cdbfb2d4::t_5cb9563f154b12 150-160
+  h_c49f5768e8ddb0 213
+  s_298fac49e4a6d4::t_43020be0284a1b 177-180,182-184
+  s_298fac49e4a6d4::t_a0a771a40521b4 243-247,262-263
+  s_298fac49e4a6d4::t_0972dc7da0ef85 6,8
+  s_adbb30cdbfb2d4::t_5365cfc50e39a4 69-70
+  s_298fac49e4a6d4::t_8cc30c4092da83 23
+  s_adbb30cdbfb2d4::t_b5f1f07bdcfa77 210-211,214-217
+  s_298fac49e4a6d4::t_5a7a438816f05d 241-242,248-261
+  s_e56383c26f1614::t_587c4cfda1b811 190-207
+  s_e56383c26f1614::t_6fe6c91fcd76fe 1-2,4-5,7,9-12,16-22,24-30,37-38,46-52,55,58-59,63,66,72-73,75,79-82,87-90,93-127,130-138,141-149,187-189,208,218-227,285-299
+  s_adbb30cdbfb2d4::t_e60dd7ef50170d 161-171,174
+  s_e56383c26f1614::t_263e3a7046fd5c 15
+  s_298fac49e4a6d4::t_6f340287e7301e 175-176
+  s_298fac49e4a6d4::t_a0642f3cff99a6 181,185
+  s_adbb30cdbfb2d4::t_730908a1a1b49d 61,65
+  s_298fac49e4a6d4::t_1b3b3092927962 3
+  s_adbb30cdbfb2d4::t_ef348aed1bf59a 62
+  s_adbb30cdbfb2d4::t_76c0f23e7d0c8b 237-240
+src/main/java/com/pacta/pacta_app/admin/application/AdminService.java
+  s_72b023079fe27c::t_25178d0ae8afec 52,54
+  s_72b023079fe27c::t_bfe291bb9dca03 44-51
+src/main/java/com/pacta/pacta_app/property/infrastructure/persistence/PropertyAttributeConfigJpaEntity.java
+  s_adbb30cdbfb2d4::t_ff34e75d08f7c8 1-31
+src/main/resources/db/migration/V7__create_properties_table.sql
+  s_e56383c26f1614::t_4b0ffe8f652228 1-27
+src/main/java/com/pacta/pacta_app/compliance/infrastructure/InMemoryComplianceDocConfigRepository.java
+  s_e56383c26f1614::t_9538083123b4fa 3-4,8,13-19,22-31,33-36,40-43,47
+src/main/java/com/pacta/pacta_app/shared/infrastructure/controller/StorageController.java
+  s_72b023079fe27c::t_600a345890ce6d 10,13-14,40-43
+src/main/java/com/pacta/pacta_app/compliance/application/dto/ComplianceDocResponse.java
+  s_e56383c26f1614::t_612df69f20c698 6-14,18
+src/main/java/com/pacta/pacta_app/tenant/application/dto/TenantPublicResponse.java
+  s_298fac49e4a6d4::t_14aa37a7a791e1 15-16,18-19,25-28
+  s_298fac49e4a6d4::t_069fe2fcdb30f3 1,4,8-14,17,20-24,29
+src/main/java/com/pacta/pacta_app/user/domain/User.java
+  s_e56383c26f1614::t_3a180a13062b89 59-62
+src/main/java/com/pacta/pacta_app/property/domain/spec/ParkingSpec.java
+  s_adbb30cdbfb2d4::t_9a4c3d90acdb6b 1-18,26-31
+  s_adbb30cdbfb2d4::t_c6b0c7f26b7a63 19-25
+src/main/java/com/pacta/pacta_app/property/domain/PropertyRequestStatus.java
+  s_298fac49e4a6d4::t_bab8cab21b524b 1-5
+src/main/resources/db/migration/V8__refactor_property_fields.sql
+  s_adbb30cdbfb2d4::t_812df951814fe1 1-13
+src/main/java/com/pacta/pacta_app/user/infrastructure/persistence/UserJpaRepository.java
+  s_298fac49e4a6d4::t_a865dc6c517936 15-22
+src/main/java/com/pacta/pacta_app/property/infrastructure/InMemoryPropertyAttributeConfigRepository.java
+  s_adbb30cdbfb2d4::t_10bcb7fd43c691 1-32
+src/main/java/com/pacta/pacta_app/property/infrastructure/controller/PropertyController.java
+  s_298fac49e4a6d4::t_3a0479bfe499d1 8
+  s_298fac49e4a6d4::t_485961c584fd15 95
+  s_298fac49e4a6d4::t_9a55f52e0703d3 6
+  s_298fac49e4a6d4::t_a762130a4a97ea 130,133-134,143-144
+  s_298fac49e4a6d4::t_886c8b8dd67b8e 94,96-118,122-127
+  s_298fac49e4a6d4::t_03b93bc85d3b36 176-178
+  s_e56383c26f1614::t_dadc4225c8b488 1-3,5,10-11,13-24,26-29,33-38,42-46,50-54,58-62,66-67,76-77,82,169-170,172-173,180-181
+  s_298fac49e4a6d4::t_ffb08d80e51265 12
+  s_298fac49e4a6d4::t_8a980c6b94d576 25
+  s_adbb30cdbfb2d4::t_22fc8175fb18fb 90
+  s_298fac49e4a6d4::t_99b8a60cb487bd 145-160
+  s_adbb30cdbfb2d4::t_9dfcb08be61f04 84-89,91-92
+  s_298fac49e4a6d4::t_3b1f7aa9c807e8 93,119-121,128-129
+  s_298fac49e4a6d4::t_06504dc91432ce 40
+  s_298fac49e4a6d4::t_4564d49634b5f3 174-175
+  s_298fac49e4a6d4::t_2cf3d08098f8d7 78,161-168
+  s_298fac49e4a6d4::t_1c8bef6a21db9a 179
+  s_298fac49e4a6d4::t_19a1ec06c11996 9
+  s_298fac49e4a6d4::t_235055b3792ef2 131-132,135-142
+  s_298fac49e4a6d4::t_d819178ea62cc2 7
+  s_298fac49e4a6d4::t_93dc2720b9d20e 32,41,49,57,65,73,81,171
+  s_298fac49e4a6d4::t_cf494be842d083 4
+  s_adbb30cdbfb2d4::t_46f6d72915006c 30-31,39,47-48,55-56,63-64,79-80
+  s_adbb30cdbfb2d4::t_285daf5991bc75 68-72,74-75
+src/main/java/com/pacta/pacta_app/property/domain/IPropertyRequestRepository.java
+  s_298fac49e4a6d4::t_6998ccb8786fa4 1-12
+src/main/java/com/pacta/pacta_app/property/application/dto/UpdatePropertyRequest.java
+  s_e56383c26f1614::t_5dda0d9d05014e 33
+  s_298fac49e4a6d4::t_2d3bac3b9f9a30 25
+  s_298fac49e4a6d4::t_36bbe5622275e0 5,27
+  s_e56383c26f1614::t_355e23fc678299 1-2,4,6-10,17,20-21,23,26,30-32,34
+  s_298fac49e4a6d4::t_58485260f31a52 22
+  s_adbb30cdbfb2d4::t_a36d14a6827da6 13
+  s_adbb30cdbfb2d4::t_eafb941877a5b2 3
+  s_adbb30cdbfb2d4::t_581e730a9f8f9d 15,18-19,28-29
+  s_adbb30cdbfb2d4::t_d817f50cf04241 16,24
+  s_adbb30cdbfb2d4::t_ca7e3c38473e21 11-12,14
+src/main/java/com/pacta/pacta_app/property/domain/spec/HouseSpec.java
+  s_adbb30cdbfb2d4::t_52c74408573b2c 1-17,24,27-32
+  s_adbb30cdbfb2d4::t_3ee09d0e50f18d 18-23,25-26
+src/main/java/com/pacta/pacta_app/user/application/UserService.java
+  s_298fac49e4a6d4::t_877695008bbb25 40-43
+.gitignore
+  h_c49f5768e8ddb0 6-7
+src/main/java/com/pacta/pacta_app/compliance/infrastructure/persistence/ComplianceDocConfigSpringRepository.java
+  s_e56383c26f1614::t_79b17f44147c74 5-11
+src/main/java/com/pacta/pacta_app/property/infrastructure/persistence/PostgresPropertyAttributeConfigRepository.java
+  s_adbb30cdbfb2d4::t_eca17882b548e8 1-55
+src/main/java/com/pacta/pacta_app/profile/application/ProfileService.java
+  s_a33d3cf3da47ea::t_2e3b8a97cb197f 100-103
+  h_c49f5768e8ddb0 72
+  s_a33d3cf3da47ea::t_a4da0ed7f212eb 7
+  s_a33d3cf3da47ea::t_d2c85db25851a1 36-41
+  s_e56383c26f1614::t_34c8fff5ff3bfb 73
+  s_a33d3cf3da47ea::t_653847677ab35c 76-77
+src/main/java/com/pacta/pacta_app/property/domain/PropertyStatus.java
+  s_e56383c26f1614::t_46dbf19a464e4e 1-8,10-11
+  s_e56383c26f1614::t_9c5ecc5419e95b 9
+src/main/java/com/pacta/pacta_app/compliance/application/ComplianceDocConfigService.java
+  s_e56383c26f1614::t_646822abbdf2ed 4-6,8,10,16,18,20,34-41,44,47-51,59
+  s_a33d3cf3da47ea::t_350cf2857f7210 3,19,22-23,27-33,45-46,52-58
+src/main/java/com/pacta/pacta_app/compliance/infrastructure/controller/ComplianceController.java
+  s_a33d3cf3da47ea::t_af58e66a1b7a69 56
+  s_e56383c26f1614::t_1df5e82e8876e6 4
+  s_e56383c26f1614::t_5281ea4bdecf26 35,39,44,47
+  s_e56383c26f1614::t_a0a338fe5ab590 6,43,52-54
+  s_a33d3cf3da47ea::t_e50c69ea52682b 48
+  s_72b023079fe27c::t_33ecb156f0213e 25-29
+  s_a33d3cf3da47ea::t_12bbe5f3a6bde6 38
+  h_c49f5768e8ddb0 36-37,45,55
+  s_298fac49e4a6d4::t_fcc4c5760de311 20,22,24,32,34,42,51
+  s_e56383c26f1614::t_4700d5a09dd14a 46
+src/main/java/com/pacta/pacta_app/property/infrastructure/persistence/PropertyRequestJpaEntity.java
+  s_298fac49e4a6d4::t_61edc3b74fef67 1-17
+src/main/java/com/pacta/pacta_app/property/domain/IPropertyRepository.java
+  s_298fac49e4a6d4::t_4ad60be001051a 3,5
+  s_e56383c26f1614::t_a3a59c31c4f121 1-2,6-12,14,18
+  s_adbb30cdbfb2d4::t_90395d5aefce3c 16
+  s_adbb30cdbfb2d4::t_b1fb08afa51bc0 17
+  s_298fac49e4a6d4::t_9dd6c65985102f 4,15
+  s_adbb30cdbfb2d4::t_643268769db66b 13
+src/main/java/com/pacta/pacta_app/compliance/domain/ComplianceDocConfig.java
+  s_e56383c26f1614::t_e4d4f7aecc77d3 7-12
+src/main/java/com/pacta/pacta_app/shared/domain/RoleGuard.java
+  s_adbb30cdbfb2d4::t_f452656fc807af 1,4,6-7,9,12-13,15-20,23-24
+src/main/java/com/pacta/pacta_app/property/infrastructure/persistence/PropertySpringRepository.java
+  s_298fac49e4a6d4::t_0221542ae9f2f8 6-7,15,78-95,99
+  s_e56383c26f1614::t_1c8d5cd69e41e2 1-2,5,8-12,14,100
+  s_298fac49e4a6d4::t_ca75a82eb95c89 77,96-98
+  s_298fac49e4a6d4::t_072d44decaae70 3-4,16-76
+  s_adbb30cdbfb2d4::t_cd20405c5ccbab 13
+src/main/java/com/pacta/pacta_app/shared/domain/PagedResult.java
+  s_298fac49e4a6d4::t_5017da6b991338 1-11
+src/main/java/com/pacta/pacta_app/property/infrastructure/persistence/PostgresPropertyRequestRepository.java
+  s_298fac49e4a6d4::t_c1d8063e4844d1 1,3-5,8,10-14,16-20,22-25,28-29,33-34,38-55
+src/main/java/com/pacta/pacta_app/property/infrastructure/controller/PropertyAttributeConfigController.java
+  s_adbb30cdbfb2d4::t_b0e55924204ae4 1,3-7,16,18,20,22-35,38-43,46-51,54,56-59
+src/main/resources/db/migration/V10__property_title_address.sql
+  s_adbb30cdbfb2d4::t_114eb5954fd7af 1-4
+src/main/java/com/pacta/pacta_app/reviewer/infrastructure/controller/ReviewerController.java
+  s_298fac49e4a6d4::t_19a1ec06c11996 5
+  s_e56383c26f1614::t_40f9d212ea24d0 22
+  s_298fac49e4a6d4::t_1c8bef6a21db9a 69,76
+  s_298fac49e4a6d4::t_8a980c6b94d576 23
+  s_298fac49e4a6d4::t_45b6b68e246da0 17
+  s_adbb30cdbfb2d4::t_d6c4616dd760f0 73-75,77-79
+  s_298fac49e4a6d4::t_93dc2720b9d20e 83,89
+  s_e56383c26f1614::t_2508814c50bcca 3-4
+  s_adbb30cdbfb2d4::t_08770a0663d2a3 66-68,70-72
+  s_e56383c26f1614::t_0c747867068adf 63-65,80-82,84-88,90
+src/main/java/com/pacta/pacta_app/property/application/dto/PropertyAttributeConfigPatchRequest.java
+  s_adbb30cdbfb2d4::t_4d2f899a68bf9c 1-6
+src/main/java/com/pacta/pacta_app/profile/infrastructure/controller/ProfileController.java
+  s_298fac49e4a6d4::t_2d537aea091fc9 30
+  s_e56383c26f1614::t_7b5f48187dc2b6 177
+  s_a33d3cf3da47ea::t_13cfabd33a5974 179
+  s_adbb30cdbfb2d4::t_7aa660941354e0 61-62,65-68
+  h_c49f5768e8ddb0 94
+  s_a33d3cf3da47ea::t_466fc8b13cd777 98-99
+  s_adbb30cdbfb2d4::t_ed8a1fc309725f 8
+  s_adbb30cdbfb2d4::t_13e5099b219dbb 35
+  s_adbb30cdbfb2d4::t_4a0ccfea82b07f 21
+  s_adbb30cdbfb2d4::t_2f9444337a6a45 84
+  s_a33d3cf3da47ea::t_e215416b0531b4 6
+  s_a33d3cf3da47ea::t_08448e2636c3a1 144,157
+  s_adbb30cdbfb2d4::t_06659f25618988 20
+src/main/java/com/pacta/pacta_app/property/domain/PropertyPurpose.java
+  s_adbb30cdbfb2d4::t_c5037f8aeaca12 1,3-5
+src/main/java/com/pacta/pacta_app/property/domain/PropertyRequest.java
+  s_298fac49e4a6d4::t_9bccc885cf20fb 1-45
+src/main/java/com/pacta/pacta_app/reviewer/application/dto/ComplianceReviewItem.java
+  h_c49f5768e8ddb0 20
+src/main/java/com/pacta/pacta_app/property/infrastructure/persistence/PropertyRequestSpringRepository.java
+  s_298fac49e4a6d4::t_416a41424fa92a 1-12
+src/main/java/com/pacta/pacta_app/user/domain/IUserRepository.java
+  s_298fac49e4a6d4::t_48b0f77da28d0a 14
+src/main/resources/db/migration/queries.sql
+  s_e56383c26f1614::t_74e6f7eacd3fcf 72
+  s_e56383c26f1614::t_a3a33d102a76e6 93
+  h_c49f5768e8ddb0 76,81,88-92
+  s_e56383c26f1614::t_97de67be95375f 102
+src/main/resources/db/migration/V9__create_property_attribute_configs.sql
+  s_adbb30cdbfb2d4::t_c901553711f4a1 1-10
+  s_adbb30cdbfb2d4::t_60752b5ff4712a 11-23
+src/main/java/com/pacta/pacta_app/property/infrastructure/persistence/PostgresPropertyRepository.java
+  s_adbb30cdbfb2d4::t_681dadb2a5bd50 4-8
+  s_adbb30cdbfb2d4::t_c2e17b14265018 113
+  s_adbb30cdbfb2d4::t_4bdcc49db43835 79
+  s_adbb30cdbfb2d4::t_97c30e142cd5a0 80,84
+  s_298fac49e4a6d4::t_693802af3ac66f 93
+  s_adbb30cdbfb2d4::t_7cf782c5d624fc 115
+  s_298fac49e4a6d4::t_f39f685d993088 3
+  s_e56383c26f1614::t_659aae2cc50dd3 1-2,12-35,41-43,75-78,82,85,88-89,91-92,94,98-112,116,119,122-123,125-126,128,132-142,144,146-147,149,151-162
+  s_adbb30cdbfb2d4::t_e017430c9a038a 45,66-69
+  s_adbb30cdbfb2d4::t_e38140f4dff242 143,145,148,150
+  s_adbb30cdbfb2d4::t_6681b6d53cda99 81
+  s_adbb30cdbfb2d4::t_b52263a3b6522e 83,86-87,95-97,117,120-121,129-131
+  s_adbb30cdbfb2d4::t_06adbb4677d0f2 36-40
+  s_298fac49e4a6d4::t_4c3c90c1bde9a5 90
+  s_298fac49e4a6d4::t_8416556c1e0556 127
+  s_298fac49e4a6d4::t_3cccb3c7345162 46,49-50,58-62
+  s_298fac49e4a6d4::t_211fcb8060200c 52-56,63-65
+  s_adbb30cdbfb2d4::t_dbe214a678a179 114,118
+  s_adbb30cdbfb2d4::t_4496ad2468afb7 70-74
+  s_298fac49e4a6d4::t_8bd9d40826fa88 124
+  s_298fac49e4a6d4::t_d505e60d10f217 47-48,51,57
+  s_298fac49e4a6d4::t_81b61fc38986d0 9-11
+src/main/java/com/pacta/pacta_app/compliance/domain/ComplianceDocument.java
+  s_e56383c26f1614::t_e25d92ed28168a 18,60,65
+src/main/java/com/pacta/pacta_app/kyc/application/KycService.java
+  s_72b023079fe27c::t_25e208007e9ab1 8
+  s_72b023079fe27c::t_6c83a0105ad330 72,82
+  s_72b023079fe27c::t_f3ed9dd19dea03 27-29
+  s_72b023079fe27c::t_ad9b4005db6d44 101-106
+src/main/java/com/pacta/pacta_app/property/domain/Property.java
+  s_e56383c26f1614::t_ec44e9929592a0 78,136-153,155-157
+  s_e56383c26f1614::t_d18dd1935d43b5 1-2,4-10,12-20,23,35-36,38,41-43,47-65,67,70-77,79-80,88-92,97-135,158-163,171
+  s_adbb30cdbfb2d4::t_1dc8bff2d604d4 30-32
+  h_c49f5768e8ddb0 39-40,69
+  s_adbb30cdbfb2d4::t_c79885c1da9b05 22
+  s_adbb30cdbfb2d4::t_dfe6dc3bfbc2a6 25,28
+  s_adbb30cdbfb2d4::t_0965c53ba22eb3 11
+  s_adbb30cdbfb2d4::t_b2afe4fe81e7e9 66
+  s_298fac49e4a6d4::t_fb24ddc43991e7 154
+  s_adbb30cdbfb2d4::t_ec9343ee75239a 164-170
+  s_298fac49e4a6d4::t_8926c0d60d9a37 37
+  s_adbb30cdbfb2d4::t_4b721baf2cfedb 3,21,24,27,29,33-34,44-46,81-87,93-96
+  s_adbb30cdbfb2d4::t_8a3853f1c7f033 68
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.5.9",
+  "base_commit_sha": "7080e2155bf2ca90e7a363fc807c8e6b7db33b14",
+  "prompts": {},
+  "humans": {
+    "h_c49f5768e8ddb0": {
+      "author": "wtaborda_meli <wilder.taborda@mercadolibre.com.co>"
+    }
+  },
+  "sessions": {
+    "s_298fac49e4a6d4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cfcf5c09-6024-49e2-a41b-2d7259d477d2",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": null
+    },
+    "s_72b023079fe27c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "23f49c07-97da-45ac-89f1-b732b6198ab5",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": null
+    },
+    "s_9494df6706d961": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e06a0ff4-dfdc-4f38-bd00-4506c570e6e9",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": null
+    },
+    "s_a33d3cf3da47ea": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "2292e263-a878-406d-8d0b-cb3e85ae735d",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": null
+    },
+    "s_adbb30cdbfb2d4": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "85d4ccf4-6aac-4d61-8b02-7ae9dad8e49c",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": null
+    },
+    "s_e56383c26f1614": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "e9a73530-c96f-47e4-baab-9be34cdd780d",
+        "model": "claude-sonnet-4-6"
+      },
+      "human_author": null
+    }
+  }
+}
